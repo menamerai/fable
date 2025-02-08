@@ -1,14 +1,15 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { BOOKS } from '@/lib/data';
 import type { Book } from '@/types/book';
 import { LibraryBig, PlusIcon } from 'lucide-react';
-
+import { useNavigate } from 'react-router';
 function BookCard({
   book,
   onClick,
@@ -54,47 +55,10 @@ function BookCard({
   );
 }
 
-// Test data
-const testBooks: Book[] = [
-  {
-    id: '1',
-    title: 'The Great Gatsby',
-    author: 'F. Scott Fitzgerald',
-    imageUrl:
-      'https://www.gutenberg.org/cache/epub/64317/pg64317.cover.medium.jpg',
-  },
-  {
-    id: '2',
-    title: 'Crime and Punishment',
-    author: 'Fyodor Dostoevsky',
-    imageUrl:
-      'https://www.gutenberg.org/cache/epub/2554/pg2554.cover.medium.jpg',
-  },
-  {
-    id: '4',
-    title: 'Pride and Prejudice',
-    author: 'Jane Austen',
-    imageUrl:
-      'https://www.gutenberg.org/cache/epub/1342/pg1342.cover.medium.jpg',
-  },
-  {
-    id: '5',
-    title: 'The Picture of Dorian Gray',
-    author: 'Oscar Wilde',
-    imageUrl:
-      'https://www.gutenberg.org/cache/epub/26740/pg26740.cover.medium.jpg',
-  },
-  {
-    id: '6',
-    title: 'Frankenstein',
-    author: 'Mary Shelley',
-    imageUrl: 'https://www.gutenberg.org/cache/epub/84/pg84.cover.medium.jpg',
-  },
-];
-
 export default function Library(): React.ReactElement {
+  const navigate = useNavigate();
   const handleBookClick = (book: Book) => {
-    console.log('Book clicked:', book);
+    navigate(`/story/${book.id}`);
   };
 
   const handleAddBook = (file: File) => {
@@ -109,7 +73,7 @@ export default function Library(): React.ReactElement {
       </div>
 
       <div className='flex flex-wrap justify-center gap-4 p-4'>
-        {testBooks.map((book) => (
+        {BOOKS.map((book) => (
           <BookCard
             key={book.id}
             book={book}
