@@ -5,8 +5,7 @@ function App() {
   return (
     <>
       <div className='w-full flex justify-center'>
-        {/* <Library /> */}
-        <Story />
+        <Library />
       </div>
     </>
   );
