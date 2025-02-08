@@ -5,3 +5,5 @@ boto3
 moviepy
 pydub
 google-genai
+# server
+fastapi[standard]
