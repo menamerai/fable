@@ -1,6 +1,5 @@
 import os
 
-from uuid import uuid4
 from fastapi import FastAPI, File, UploadFile
 from dotenv import load_dotenv
 
