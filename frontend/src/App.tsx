@@ -1,5 +1,4 @@
 import Library from '@/components/Library';
-import Story from '@/components/Story';
 
 function App() {
   return (
