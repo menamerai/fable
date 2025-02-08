@@ -1,5 +1,5 @@
-import Library from '@/components/Library';
 import { ModeToggle } from '@/components/mode-toggle';
+import Story from '@/components/Story';
 import { ThemeProvider } from '@/components/theme-provider';
 
 function App() {
@@ -9,7 +9,8 @@ function App() {
         <ModeToggle />
       </div>
       <div className='w-full flex justify-center'>
-        <Library />
+        {/* <Library /> */}
+        <Story />
       </div>
     </ThemeProvider>
   );
