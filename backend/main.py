@@ -1,6 +1,7 @@
 import os
 
 from fastapi import FastAPI, File, UploadFile
+from fastapi.responses import FileResponse
 from dotenv import load_dotenv
 
 # from inference import process_text
@@ -24,8 +25,15 @@ async def upload(file: UploadFile = File(...)):
     # json_response = process_text(file.file.read())
     file_content = await file.read()
     json_response = [
-        {"content": file_content.decode("utf-8"), "audio_path": f"{storage_path}/audio.wav"},
+        {"content": file_content.decode("utf-8"), "audio_path": f"{storage_path}/audio/sample.mp3"},
     ]
-
     
     return {"message": f"File '{file.filename}' uploaded successfully to {storage_path}", "data": json_response}
+
+@app.get("/audio/{filename}")
+async def get_audio(filename: str):
+    file_path = os.path.join(storage_path, "music", filename)
+    print(file_path)
+    if os.path.exists(file_path):
+        return FileResponse(file_path)
+    return {"error": "File not found"}
