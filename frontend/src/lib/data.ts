@@ -291,6 +291,12 @@ export const BOOKS: Book[] = [
       'https://www.gutenberg.org/cache/epub/2554/pg2554.cover.medium.jpg',
   },
   {
+    id: '3',
+    title: 'The Last Signal',
+    author: 'Arthur C. Clarke',
+    markdown: SAMPLE_MD_STORY,
+  },
+  {
     id: '4',
     title: 'Pride and Prejudice',
     author: 'Jane Austen',
@@ -303,7 +309,7 @@ export const BOOKS: Book[] = [
     author: 'Oscar Wilde',
     imageUrl:
       'https://www.gutenberg.org/cache/epub/26740/pg26740.cover.medium.jpg',
-    markdown: SAMPLE_MD_STORY,
+    markdown: SAMPLE_DORIAN_GRAY,
   },
   {
     id: '6',
