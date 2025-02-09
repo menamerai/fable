@@ -34,8 +34,9 @@ export default function Story() {
   }, [theme]);
 
   return (
-    <div className='w-full flex justify-center py-16 '>
-      <div className='flex items-start gap-4 -translate-x-12'>
+    <div className='w-full flex justify-center relative'>
+      <div className='fixed top-0 left-20 right-0 h-28 bg-gradient-to-b from-background to-transparent pointer-events-none z-30' />
+      <div className='flex items-start gap-4 -translate-x-12 my-20'>
         <button
           onClick={() => navigate('/')}
           className='p-2 hover:bg-muted rounded-full hover:-translate-x-2 transition-all cursor-pointer'
@@ -54,6 +55,7 @@ export default function Story() {
           }}
         />
       </div>
+      <div className='fixed bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-background to-transparent pointer-events-none z-30' />
     </div>
   );
 }
