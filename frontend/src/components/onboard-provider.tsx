@@ -52,7 +52,7 @@ export function OnboardProvider({ children }: OnboardProviderProps) {
                 className='text-2xl font-bold mb-3'
                 style={{ fontFamily: theme.heading?.fontFamily }}
               >
-                Welcome to Storytime
+                Welcome to Fable
               </motion.h1>
               <div className=''>
                 <motion.span

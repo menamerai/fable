@@ -103,7 +103,7 @@ export default function Library(): React.ReactElement {
 
       <div className='flex items-center gap-2 mb-4'>
         <LibraryBig className='w-6 h-6' />
-        <h1 className='text-xl font-bold tracking-widest'>Library</h1>
+        <h1 className='text-xl font-bold tracking-wide'>Fables</h1>
       </div>
 
       <div className='flex flex-wrap justify-center gap-4 p-4'>
