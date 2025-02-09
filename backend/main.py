@@ -76,7 +76,7 @@ async def upload(file: UploadFile = File(...)):
 
     return {
         "message": f"File '{file.filename}' uploaded successfully to {storage_path}",
-        "data": json_response,
+        "data": { "id": file.filename },
     }
 
 
