@@ -9,6 +9,7 @@ import {
 import { BOOKS } from '@/lib/data';
 import type { Book } from '@/types/book';
 import { LibraryBig, PlusIcon } from 'lucide-react';
+import { motion } from 'motion/react';
 import { useNavigate } from 'react-router';
 function BookCard({
   book,
@@ -20,7 +21,7 @@ function BookCard({
   const { title, author, coverImage, imageUrl } = book;
 
   return (
-    <div className='flex flex-col gap-4 items-center w-60 hover:scale-105 transition-all'>
+    <div className='flex flex-col gap-4 items-center w-60 hover:scale-105 duration-500 transition-all'>
       {coverImage ? (
         <img
           alt='Cover'
@@ -66,7 +67,12 @@ export default function Library(): React.ReactElement {
   };
 
   return (
-    <div className='w-screen h-screen flex flex-col justify-start items-center pt-4 max-w-5xl'>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: 0.5, duration: 0.5 }}
+      className='w-screen h-screen flex flex-col justify-start items-center pt-4 max-w-5xl'
+    >
       <div className='flex items-center gap-2 mb-4'>
         <LibraryBig className='w-6 h-6' />
         <h1 className='text-xl font-bold tracking-widest'>Library</h1>
@@ -113,6 +119,6 @@ export default function Library(): React.ReactElement {
           </TooltipProvider>
         </label>
       </div>
-    </div>
+    </motion.div>
   );
 }
