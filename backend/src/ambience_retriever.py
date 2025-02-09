@@ -1,7 +1,7 @@
-import os
+from pathlib import Path
 
 # Define the folder path
-FOLDER_PATH = "backend/data/ambience"
+FOLDER_PATH = Path("./data/ambience")
 
 # Mapping of ambience descriptions to file names
 sound_files = {
@@ -49,7 +49,7 @@ def get_ambience_file(ambience_name):
     :return: Full file path of the corresponding sound file or None if not found.
     """
     if ambience_name in sound_files:
-        return os.path.join(FOLDER_PATH, sound_files[ambience_name])
+        return FOLDER_PATH / sound_files[ambience_name] 
     else:
         print(f"Warning: Ambience '{ambience_name}' not found.")
         return None
