@@ -163,7 +163,7 @@ const ThemeSettings = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        className={cn('w-14 h-14', buttonVariants({ variant: 'outline' }))}
+        className={cn(buttonVariants({ variant: 'outline' }), 'w-14 h-14')}
       >
         <Paintbrush className='!w-5 !h-5' />
       </DropdownMenuTrigger>

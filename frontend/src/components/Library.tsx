@@ -20,7 +20,7 @@ function BookCard({
   const { title, author, coverImage, imageUrl } = book;
 
   return (
-    <div className='flex flex-col gap-4 items-center w-60'>
+    <div className='flex flex-col gap-4 items-center w-60 hover:scale-105 transition-all'>
       {coverImage ? (
         <img
           alt='Cover'
@@ -66,10 +66,10 @@ export default function Library(): React.ReactElement {
   };
 
   return (
-    <div className='w-screen h-screen flex flex-col justify-start items-center pt-4'>
+    <div className='w-screen h-screen flex flex-col justify-start items-center pt-4 max-w-5xl'>
       <div className='flex items-center gap-2 mb-4'>
         <LibraryBig className='w-6 h-6' />
-        <h1 className='text-xl font-bold'>Library</h1>
+        <h1 className='text-xl font-bold tracking-widest'>Library</h1>
       </div>
 
       <div className='flex flex-wrap justify-center gap-4 p-4'>

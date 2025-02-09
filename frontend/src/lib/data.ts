@@ -277,25 +277,25 @@ Dorian Gray stepped up on the dais, with the air of a young Greek martyr, and ma
 
 export const BOOKS: Book[] = [
   {
+    id: '3',
+    title: 'The Last Signal',
+    author: 'Arthur C. Clarke',
+    markdown: SAMPLE_MD_STORY,
+  },
+  {
     id: '1',
     title: 'The Great Gatsby',
     author: 'F. Scott Fitzgerald',
     imageUrl:
       'https://www.gutenberg.org/cache/epub/64317/pg64317.cover.medium.jpg',
   },
-  {
-    id: '2',
-    title: 'Crime and Punishment',
-    author: 'Fyodor Dostoevsky',
-    imageUrl:
-      'https://www.gutenberg.org/cache/epub/2554/pg2554.cover.medium.jpg',
-  },
-  {
-    id: '3',
-    title: 'The Last Signal',
-    author: 'Arthur C. Clarke',
-    markdown: SAMPLE_MD_STORY,
-  },
+  // {
+  //   id: '2',
+  //   title: 'Crime and Punishment',
+  //   author: 'Fyodor Dostoevsky',
+  //   imageUrl:
+  //     'https://www.gutenberg.org/cache/epub/2554/pg2554.cover.medium.jpg',
+  // },
   {
     id: '4',
     title: 'Pride and Prejudice',
