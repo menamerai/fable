@@ -1,0 +1,7 @@
+From a story segment, generate only text instruction for music that would thematically fit that music. The text description should be similar in format to:
+
+"4/4 60bpm 320kbps 48khz spacious ambient with deep, resonant drones, shimmering synth pads, and subtle, echoing piano melodies in D minor.  Add a hint of reverb and delay to create a sense of scale."
+
+Return the answer in JSON in the format:
+- "prompt": the generated instruction
+Here is the text segment:

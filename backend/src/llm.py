@@ -143,6 +143,45 @@ async def gemini_generate_ambience(text_file: str, json_file: list) -> str:
         }, f, indent=4)
 
 
+def gemini_generate_music_prompt(json_file: list) -> str:
+    load_dotenv()
+    templates_path = Path("./templates")
+    data_path = Path("./data")
+    templates_path.mkdir(parents=True, exist_ok=True)
+
+    guide_path = templates_path / "gemini_gen_music.txt"
+
+    client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
+    with open(guide_path, "r", encoding='utf-8') as f:
+        guide_text = f.read()
+
+    start_segment = json_file[0]["text"]
+    end_segment = json_file[1]["text"]
+
+    start_prompt = f"{guide_text}\n\n{start_segment}"
+    end_prompt = f"{guide_text}\n\n{end_segment}"
+
+    response_start = client.models.generate_content(
+        model="gemini-2.0-flash", contents=start_prompt
+    )
+    response_end = client.models.generate_content(
+        model="gemini-2.0-flash", contents=end_prompt
+    )
+
+    response_text_start = response_start.text.lstrip("```json").rstrip("```")
+    response_text_end = response_end.text.lstrip("```json").rstrip("```")
+
+    json_data_start = json.loads(response_text_start).get("prompt", "")
+    json_data_end = json.loads(response_text_end).get("prompt", "")
+
+    return {
+        "start": json_data_start,
+        "end": json_data_end
+    }
+
+
+
+
 async def gemini_get_shadow(text_file: str) -> str:
     load_dotenv()
     templates_path = Path("./backend/templates")
