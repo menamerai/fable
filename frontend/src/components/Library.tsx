@@ -6,7 +6,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { BOOKS } from '@/lib/data';
+import { UploadingDialog } from '@/components/uploading-dialog';
+import { useFileUpload } from '@/hooks/useFileUpload';
+import { useMemoryDb } from '@/hooks/useMemoryDb';
 import type { Book } from '@/types/book';
 import { LibraryBig, PlusIcon } from 'lucide-react';
 import { motion } from 'motion/react';
@@ -58,12 +60,25 @@ function BookCard({
 
 export default function Library(): React.ReactElement {
   const navigate = useNavigate();
+  const { books, addBook } = useMemoryDb();
+  const { upload, isUploading } = useFileUpload();
+
   const handleBookClick = (book: Book) => {
     navigate(`/story/${book.id}`);
   };
 
-  const handleAddBook = (file: File) => {
-    console.log('File added:', file);
+  const handleAddBook = async (file: File) => {
+    // await upload(file);
+    const text = await file.text();
+    const title = file.name.split('.')[0];
+
+    addBook({
+      id: file.name,
+      title: title,
+      author: 'Test',
+      markdown: text,
+    });
+    console.log(books);
   };
 
   return (
@@ -73,13 +88,15 @@ export default function Library(): React.ReactElement {
       transition={{ delay: 0.5, duration: 0.5 }}
       className='w-screen h-screen flex flex-col justify-start items-center pt-4 max-w-5xl'
     >
+      <UploadingDialog isUploading={isUploading} />
+
       <div className='flex items-center gap-2 mb-4'>
         <LibraryBig className='w-6 h-6' />
         <h1 className='text-xl font-bold tracking-widest'>Library</h1>
       </div>
 
       <div className='flex flex-wrap justify-center gap-4 p-4'>
-        {BOOKS.map((book) => (
+        {books.map((book) => (
           <BookCard
             key={book.id}
             book={book}
@@ -90,7 +107,7 @@ export default function Library(): React.ReactElement {
 
       <div className='absolute right-4 top-4'>
         <Input
-          accept='application/epub+zip'
+          accept='text/plain'
           className='hidden'
           id='book'
           name='book'

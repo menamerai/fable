@@ -686,10 +686,10 @@ export const BOOKS: Book[] = [
     author: 'Mary Shelley',
     imageUrl: 'https://www.gutenberg.org/cache/epub/84/pg84.cover.medium.jpg',
   },
-  {
-    id: '7',
-    title: 'The Last Question',
-    author: 'Isaac Asimov',
-    markdown: SAMPLE_LAST_QUESTION_TXT,
-  },
+  // {
+  //   id: '7',
+  //   title: 'The Last Question',
+  //   author: 'Isaac Asimov',
+  //   markdown: SAMPLE_LAST_QUESTION_TXT,
+  // },
 ];

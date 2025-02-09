@@ -9,9 +9,9 @@ from contextlib import asynccontextmanager
 import sys
 from pathlib import Path
 from shared import gesture_queue  # Update import
-# from src.chunk import chunk_text
-# from src.model import MAGNeT_inference
-# from src.llm import gemini_generate_ambience
+from src.chunk import chunk_text
+from src.model import MAGNeT_inference
+from src.llm import gemini_generate_ambience
 
 # Add gestures.py to the Python path if it's in the same directory
 sys.path.append(str(Path(__file__).parent))
@@ -55,39 +55,39 @@ async def root():
     return {"message": "Hello World"}
 
 
-# @app.post("/upload")
-# async def upload(file: UploadFile = File(...)):
-#     if file.content_type != "text/plain":
-#         return {"error": "Only .txt files are allowed"}
+@app.post("/upload")
+async def upload(file: UploadFile = File(...)):
+    if file.content_type != "text/plain":
+        return {"error": "Only .txt files are allowed"}
 
-#     file_content = await file.read()
+    file_content = await file.read()
 
-#     # Ensure the storage path exists
-#     os.makedirs(storage_path, exist_ok=True)
+    # Ensure the storage path exists
+    os.makedirs(storage_path, exist_ok=True)
 
-#     # Define the path to save the file
-#     file_path = os.path.join(storage_path, "books", file.filename)
+    # Define the path to save the file
+    file_path = os.path.join(storage_path, "books", file.filename)
 
-#     # Ensure the books directory exists
-#     os.makedirs(os.path.dirname(file_path), exist_ok=True)
+    # Ensure the books directory exists
+    os.makedirs(os.path.dirname(file_path), exist_ok=True)
 
-#     # Write the file content to the specified path
-#     with open(file_path, "wb") as f:
-#         f.write(file_content)
+    # Write the file content to the specified path
+    with open(file_path, "wb") as f:
+        f.write(file_content)
 
-#     # Call chunk_text to process the file
-#     json_response = chunk_text(Path(file_path))
+    # Call chunk_text to process the file
+    json_response = chunk_text(Path(file_path))
 
-#     # Kick off MAGNeT_inference as a background task
-#     asyncio.create_task(MAGNeT_inference(json_response))
+    # Kick off MAGNeT_inference as a background task
+    asyncio.create_task(MAGNeT_inference(json_response))
 
-#     # kick off ambience generation as a background task
-#     asyncio.create_task(gemini_generate_ambience(file_path, json_response))
+    # kick off ambience generation as a background task
+    asyncio.create_task(gemini_generate_ambience(file_path, json_response))
 
-#     return {
-#         "message": f"File '{file.filename}' uploaded successfully to {storage_path}",
-#         "data": { "id": file.filename },
-#     }
+    return {
+        "message": f"File '{file.filename}' uploaded successfully to {storage_path}",
+        "data": { "id": file.filename },
+    }
 
 
 @app.get("/audio/{filename}")

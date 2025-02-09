@@ -1,5 +1,6 @@
 import { useArticleTheme } from '@/components/article-theme-provider';
 import { SentenceAudio } from '@/components/audio';
+import { useMemoryDb } from '@/hooks/useMemoryDb';
 import { defaultSentences, useSentences } from '@/hooks/useSentences';
 import { useWebSocket } from '@/hooks/useWebsocket';
 import {
@@ -7,7 +8,6 @@ import {
   playAudioById,
   processAudioSentences,
 } from '@/lib/audio';
-import { BOOKS } from '@/lib/data';
 import { markdownToHtml } from '@/lib/markdown';
 import { applyTheme } from '@/lib/theme';
 import { ArrowLeft } from 'lucide-react';
@@ -17,10 +17,12 @@ import { useNavigate, useParams } from 'react-router';
 export default function Story() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const book = BOOKS.find((book) => book.id === id);
+  const { books } = useMemoryDb();
+  const book = books.find((book) => book.id === id);
 
-  // TODO: don't hardcode this
-  const { data: sentences = defaultSentences } = useSentences('lastquestion');
+  const { data: sentences = defaultSentences } = useSentences(
+    book?.title ?? ''
+  );
 
   const { theme } = useArticleTheme();
   const html = markdownToHtml(
@@ -33,15 +35,8 @@ export default function Story() {
     if (!containerRef.current) return;
     if (!sentences.start) return;
 
-    // Process the HTML to wrap specific sentences with span tags
     const processHtml = (htmlContent: string) => {
-      // Example sentences to match - you would customize this based on your needs
       const processedHtml = htmlContent;
-      // sentences.forEach((sentence, index) => {
-      //   const wrappedSentence = `<span data-highlight-id="${index}" class="highlight-target">${sentence}</span>`;
-      //   processedHtml = processedHtml.replace(sentence, wrappedSentence);
-      // });
-
       return processAudioSentences(processedHtml, sentences);
     };
 

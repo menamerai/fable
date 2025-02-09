@@ -21,6 +21,10 @@ export function useSentences(filename: string) {
   return useQuery({
     queryKey: ['sentences', jsonFilename],
     queryFn: async () => {
+      if (jsonFilename === '') {
+        return defaultSentences;
+      }
+
       const response = await fetch(
         `${import.meta.env.VITE_BACKEND_URL}/selection/${jsonFilename}`
       );
