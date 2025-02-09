@@ -101,64 +101,94 @@ const ThemeSettings = () => {
     setFontSize: (size: number) => void;
     lineHeight: string | undefined;
     setLineHeight: (height: number) => void;
-  }) => (
-    <div className='space-y-6'>
-      <div className='flex items-center justify-between'>
-        <span className='text-lg'>A</span>
-        <Slider
-          defaultValue={[parseInt(fontSize || '16')]}
-          max={32}
-          min={10}
-          className='w-40 mx-4'
-          onValueChange={(value) => setFontSize(value[0])}
-        />
-        <span className='text-2xl'>A</span>
-      </div>
+  }) => {
+    const lineHeightToSliderValue = (heightString: string | undefined) => {
+      const height = parseFloat(heightString || '1.5');
+      if (height === 0.8) return 0;
+      if (height === 1) return 1;
+      if (height === 1.25) return 2;
+      if (height === 1.5) return 3;
+      if (height === 2) return 4;
+      return 5;
+    };
 
-      <div className='flex items-center justify-between'>
-        <div className='w-4 h-4 flex flex-col justify-center gap-0.5'>
-          <div className='h-0.5 bg-foreground w-full' />
-          <div className='h-0.5 bg-foreground w-full' />
-          <div className='h-0.5 bg-foreground w-full' />
+    const onLineHeightSliderChange = (value: number) => {
+      if (value === 0) {
+        setLineHeight(0.8);
+      } else if (value === 1) {
+        setLineHeight(1);
+      } else if (value === 2) {
+        setLineHeight(1.25);
+      } else if (value === 3) {
+        setLineHeight(1.5);
+      } else if (value === 4) {
+        setLineHeight(2);
+      } else if (value === 5) {
+        setLineHeight(2.5);
+      }
+    };
+
+    return (
+      <div className='space-y-6'>
+        <div className='flex items-center justify-between'>
+          <span
+            className='text-lg cursor-pointer'
+            onClick={() => setFontSize(parseInt(fontSize || '16') - 1)}
+          >
+            A
+          </span>
+          <Slider
+            defaultValue={[parseInt(fontSize || '16')]}
+            max={32}
+            min={10}
+            className='w-40 mx-4 cursor-pointer'
+            onValueChange={(value) => setFontSize(value[0])}
+          />
+          <span
+            className='text-2xl'
+            onClick={() => setFontSize(parseInt(fontSize || '16') + 1)}
+          >
+            A
+          </span>
         </div>
-        <Slider
-          defaultValue={[
-            parseFloat(lineHeight || '1.5') === 0.8
-              ? 0
-              : parseFloat(lineHeight || '1.5') === 1
-              ? 1
-              : parseFloat(lineHeight || '1.5') === 1.25
-              ? 2
-              : parseFloat(lineHeight || '1.5') === 1.5
-              ? 3
-              : 4,
-          ]}
-          max={4}
-          min={0}
-          step={1}
-          className='w-40 mx-4'
-          onValueChange={(value) => {
-            if (value[0] === 0) {
-              setLineHeight(0.8);
-            } else if (value[0] === 1) {
-              setLineHeight(1);
-            } else if (value[0] === 2) {
-              setLineHeight(1.25);
-            } else if (value[0] === 3) {
-              setLineHeight(1.5);
-            } else if (value[0] === 4) {
-              setLineHeight(2);
+
+        <div className='flex items-center justify-between'>
+          <div
+            className='w-4 h-4 flex flex-col justify-center gap-0.5 cursor-pointer'
+            onClick={() =>
+              onLineHeightSliderChange(
+                Math.max(0, lineHeightToSliderValue(lineHeight) - 1)
+              )
             }
-          }}
-        />
-        <div className='w-4 h-4 flex flex-col justify-between'>
-          <div className='h-0.5 bg-foreground w-full' />
-          <div className='h-0.5 bg-foreground w-full' />
-          <div className='h-0.5 bg-foreground w-full' />
+          >
+            <div className='h-0.5 bg-foreground w-full' />
+            <div className='h-0.5 bg-foreground w-full' />
+            <div className='h-0.5 bg-foreground w-full' />
+          </div>
+          <Slider
+            defaultValue={[lineHeightToSliderValue(lineHeight || '1.5')]}
+            max={5}
+            min={0}
+            step={1}
+            className='w-40 mx-4'
+            onValueChange={(value) => onLineHeightSliderChange(value[0])}
+          />
+          <div
+            className='w-4 h-4 flex flex-col justify-between cursor-pointer'
+            onClick={() =>
+              onLineHeightSliderChange(
+                Math.min(5, 1 + lineHeightToSliderValue(lineHeight))
+              )
+            }
+          >
+            <div className='h-0.5 bg-foreground w-full' />
+            <div className='h-0.5 bg-foreground w-full' />
+            <div className='h-0.5 bg-foreground w-full' />
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <DropdownMenu>
@@ -224,45 +254,39 @@ const ThemeSettings = () => {
             )}
             onClick={() => setColourTheme('dark')}
           ></Button>
-
-          {/* {Object.keys(colorSchemes).map((color, index) => (
-            <Button
-              key={index}
-              variant={
-                theme.backgroundColor === color ? 'outline' : 'secondary'
-              }
-              className={cn(
-                'w-8 h-8 rounded-full border-2 border-transparent',
-                theme.backgroundColor === color && 'border-blue-400'
-              )}
-              style={{
-                backgroundColor: colorSchemes[color as ColorScheme].background,
-              }}
-              onClick={() =>
-                setTheme({
-                  backgroundColor: color as ColorScheme,
-                })
-              }
-            />
-          ))} */}
         </div>
 
         {/* Max Width Slider */}
         <div className='flex items-center justify-between'>
-          <div className='w-4 h-4 flex flex-col justify-between items-center'>
+          <div
+            className='w-4 h-4 flex flex-col justify-between items-center cursor-pointer'
+            onClick={() =>
+              setTheme({
+                maxWidth: Math.max((theme.maxWidth || 65) - 5, 50),
+              })
+            }
+          >
             <div className='h-0.5 bg-foreground w-2' />
             <div className='h-0.5 bg-foreground w-2' />
             <div className='h-0.5 bg-foreground w-2' />
           </div>
           <Slider
             defaultValue={[theme.maxWidth || 65]}
+            value={[theme.maxWidth || 65]}
             max={120}
             min={50}
             step={5}
             className='w-40 mx-4'
             onValueChange={(value) => setTheme({ maxWidth: value[0] })}
           />
-          <div className='w-4 h-4 flex flex-col justify-between'>
+          <div
+            className='w-4 h-4 flex flex-col justify-between cursor-pointer'
+            onClick={() =>
+              setTheme({
+                maxWidth: Math.min((theme.maxWidth || 65) + 5, 120),
+              })
+            }
+          >
             <div className='h-0.5 bg-foreground w-full' />
             <div className='h-0.5 bg-foreground w-full' />
             <div className='h-0.5 bg-foreground w-full' />
