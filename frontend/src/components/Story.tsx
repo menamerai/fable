@@ -1,12 +1,20 @@
+import { useArticleTheme } from '@/components/article-theme-provider';
 import { BOOKS } from '@/lib/data';
 import { markdownToHtml } from '@/lib/markdown';
+import { applyTheme } from '@/lib/theme';
 import { ArrowLeft } from 'lucide-react';
+import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router';
 
 export default function Story() {
   const { id } = useParams();
   const navigate = useNavigate();
   const book = BOOKS.find((book) => book.id === id);
+  const { theme } = useArticleTheme();
+
+  useEffect(() => {
+    applyTheme(theme);
+  }, [theme]);
 
   return (
     <div className='w-full flex justify-center py-16 '>
