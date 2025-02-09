@@ -68,7 +68,7 @@ export default function Library(): React.ReactElement {
   };
 
   const handleAddBook = async (file: File) => {
-    // await upload(file);
+    upload(file);
     const text = await file.text();
     const title = file.name.split('.')[0];
 
@@ -78,7 +78,6 @@ export default function Library(): React.ReactElement {
       author: 'Test',
       markdown: text,
     });
-    console.log(books);
   };
 
   return (
