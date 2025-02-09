@@ -2,15 +2,16 @@ import os
 import asyncio
 from fastapi import FastAPI, File, UploadFile, WebSocket
 from fastapi.responses import FileResponse
+from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from asyncio import Queue
 from contextlib import asynccontextmanager
 import sys
 from pathlib import Path
 from shared import gesture_queue  # Update import
-from src.chunk import chunk_text
-from src.model import MAGNeT_inference
-from src.llm import gemini_generate_ambience
+# from src.chunk import chunk_text
+# from src.model import MAGNeT_inference
+# from src.llm import gemini_generate_ambience
 
 # Add gestures.py to the Python path if it's in the same directory
 sys.path.append(str(Path(__file__).parent))
@@ -39,45 +40,54 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],  # Frontend URL from .env
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
 
 
-@app.post("/upload")
-async def upload(file: UploadFile = File(...)):
-    if file.content_type != "text/plain":
-        return {"error": "Only .txt files are allowed"}
+# @app.post("/upload")
+# async def upload(file: UploadFile = File(...)):
+#     if file.content_type != "text/plain":
+#         return {"error": "Only .txt files are allowed"}
 
-    file_content = await file.read()
+#     file_content = await file.read()
 
-    # Ensure the storage path exists
-    os.makedirs(storage_path, exist_ok=True)
+#     # Ensure the storage path exists
+#     os.makedirs(storage_path, exist_ok=True)
 
-    # Define the path to save the file
-    file_path = os.path.join(storage_path, "books", file.filename)
+#     # Define the path to save the file
+#     file_path = os.path.join(storage_path, "books", file.filename)
 
-    # Ensure the books directory exists
-    os.makedirs(os.path.dirname(file_path), exist_ok=True)
+#     # Ensure the books directory exists
+#     os.makedirs(os.path.dirname(file_path), exist_ok=True)
 
-    # Write the file content to the specified path
-    with open(file_path, "wb") as f:
-        f.write(file_content)
+#     # Write the file content to the specified path
+#     with open(file_path, "wb") as f:
+#         f.write(file_content)
 
-    # Call chunk_text to process the file
-    json_response = chunk_text(Path(file_path))
+#     # Call chunk_text to process the file
+#     json_response = chunk_text(Path(file_path))
 
-    # Kick off MAGNeT_inference as a background task
-    asyncio.create_task(MAGNeT_inference(json_response))
+#     # Kick off MAGNeT_inference as a background task
+#     asyncio.create_task(MAGNeT_inference(json_response))
 
-    # kick off ambience generation as a background task
-    asyncio.create_task(gemini_generate_ambience(file_path, json_response))
+#     # kick off ambience generation as a background task
+#     asyncio.create_task(gemini_generate_ambience(file_path, json_response))
 
-    return {
-        "message": f"File '{file.filename}' uploaded successfully to {storage_path}",
-        "data": { "id": file.filename },
-    }
+#     return {
+#         "message": f"File '{file.filename}' uploaded successfully to {storage_path}",
+#         "data": { "id": file.filename },
+#     }
 
 
 @app.get("/audio/{filename}")
@@ -90,7 +100,7 @@ async def get_audio(filename: str):
 
 @app.get("/ambient_audio/{filename}")
 async def get_ambient_audio(filename: str):
-    file_path = os.path.join(storage_path, "ambient", filename)
+    file_path = os.path.join(storage_path, "ambience", filename)
     print(file_path)
     if os.path.exists(file_path):
         return FileResponse(file_path)
