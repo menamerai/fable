@@ -8,6 +8,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Slider } from '@/components/ui/slider';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ColorScheme, colorSchemes } from '@/lib/theme';
 import { cn } from '@/lib/utils';
 import { Paintbrush } from 'lucide-react';
 
@@ -68,7 +69,7 @@ const ThemeSettings = () => {
         onClick={() => setFontFamily('sans-serif')}
       >
         <div className='flex flex-col items-center'>
-          <span className='text-sm mb-2'>Sans</span>
+          <span className='text-sm'>Sans</span>
           <span className='text-2xl'>Aa</span>
         </div>
       </Button>
@@ -82,7 +83,7 @@ const ThemeSettings = () => {
         onClick={() => setFontFamily('serif')}
       >
         <div className='flex flex-col items-center'>
-          <span className='text-sm mb-2 font-serif'>Serif</span>
+          <span className='text-sm font-serif'>Serif</span>
           <span className='text-2xl font-serif'>Aa</span>
         </div>
       </Button>
@@ -115,9 +116,9 @@ const ThemeSettings = () => {
 
       <div className='flex items-center justify-between'>
         <div className='w-4 h-4 flex flex-col justify-center gap-0.5'>
-          <div className='h-0.5 bg-black w-full' />
-          <div className='h-0.5 bg-black w-full' />
-          <div className='h-0.5 bg-black w-full' />
+          <div className='h-0.5 bg-foreground w-full' />
+          <div className='h-0.5 bg-foreground w-full' />
+          <div className='h-0.5 bg-foreground w-full' />
         </div>
         <Slider
           defaultValue={[
@@ -150,9 +151,9 @@ const ThemeSettings = () => {
           }}
         />
         <div className='w-4 h-4 flex flex-col justify-between'>
-          <div className='h-0.5 bg-black w-full' />
-          <div className='h-0.5 bg-black w-full' />
-          <div className='h-0.5 bg-black w-full' />
+          <div className='h-0.5 bg-foreground w-full' />
+          <div className='h-0.5 bg-foreground w-full' />
+          <div className='h-0.5 bg-foreground w-full' />
         </div>
       </div>
     </div>
@@ -205,33 +206,34 @@ const ThemeSettings = () => {
 
         {/* Color Selection */}
         <div className='flex gap-2 mb-6 justify-between mt-6'>
-          {(['white', 'blue-50', 'gray-600', 'gray-800', 'black'] as const).map(
-            (color, index) => (
-              <Button
-                key={index}
-                variant={
-                  theme.backgroundColor === color ? 'outline' : 'secondary'
-                }
-                className={cn(
-                  'w-8 h-8 rounded-full border-2 border-transparent',
-                  color === 'blue-50' && 'bg-blue-50 hover:bg-blue-100',
-                  color === 'gray-600' && 'bg-gray-600 hover:bg-gray-700',
-                  color === 'gray-800' && 'bg-gray-800 hover:bg-gray-900',
-                  color === 'black' && 'bg-black hover:bg-neutral-900',
-                  theme.backgroundColor === color && 'border-blue-400'
-                )}
-                onClick={() => setTheme({ backgroundColor: color })}
-              />
-            )
-          )}
+          {Object.keys(colorSchemes).map((color, index) => (
+            <Button
+              key={index}
+              variant={
+                theme.backgroundColor === color ? 'outline' : 'secondary'
+              }
+              className={cn(
+                'w-8 h-8 rounded-full border-2 border-transparent',
+                theme.backgroundColor === color && 'border-blue-400'
+              )}
+              style={{
+                backgroundColor: colorSchemes[color as ColorScheme].background,
+              }}
+              onClick={() =>
+                setTheme({
+                  backgroundColor: color as ColorScheme,
+                })
+              }
+            />
+          ))}
         </div>
 
         {/* Max Width Slider */}
         <div className='flex items-center justify-between'>
           <div className='w-4 h-4 flex flex-col justify-between items-center'>
-            <div className='h-0.5 bg-black w-2' />
-            <div className='h-0.5 bg-black w-2' />
-            <div className='h-0.5 bg-black w-2' />
+            <div className='h-0.5 bg-foreground w-2' />
+            <div className='h-0.5 bg-foreground w-2' />
+            <div className='h-0.5 bg-foreground w-2' />
           </div>
           <Slider
             defaultValue={[theme.maxWidth || 65]}
@@ -242,9 +244,9 @@ const ThemeSettings = () => {
             onValueChange={(value) => setTheme({ maxWidth: value[0] })}
           />
           <div className='w-4 h-4 flex flex-col justify-between'>
-            <div className='h-0.5 bg-black w-full' />
-            <div className='h-0.5 bg-black w-full' />
-            <div className='h-0.5 bg-black w-full' />
+            <div className='h-0.5 bg-foreground w-full' />
+            <div className='h-0.5 bg-foreground w-full' />
+            <div className='h-0.5 bg-foreground w-full' />
           </div>
         </div>
       </DropdownMenuContent>

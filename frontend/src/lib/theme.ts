@@ -1,3 +1,28 @@
+export const colorSchemes = {
+  whiteTheme: {
+    background: '#f5f5f5', // Off-white (softer than pure white)
+    foreground: '#212121', // Dark gray
+  },
+  sepiaTheme: {
+    background: '#d4b595', // Light sepia tone
+    foreground: '#3a2a1a', // Dark chocolate brown
+  },
+  blackTheme: {
+    background: '#121212', // Dark gray (easier on eyes than pure black)
+    foreground: '#E0E0E0', // Off-white (better contrast than pure white)
+  },
+  highContrastDark: {
+    background: '#000000', // Pure black
+    foreground: '#00a8e8', // Vibrant cyan (AA compliant)
+  },
+  professionalBlue: {
+    background: '#00171f', // Rich dark blue
+    foreground: '#caf0f8', // Pale cyan
+  },
+} as const;
+
+export type ColorScheme = keyof typeof colorSchemes;
+
 export function applyTheme(theme: PartialTheme) {
   const headingElements = document.querySelectorAll(
     '.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6'
@@ -49,8 +74,14 @@ export function applyTheme(theme: PartialTheme) {
   }
 
   if (backgroundColor) {
-    const root = document.documentElement;
-    root.style.backgroundColor = backgroundColor;
+    document.body.style.setProperty(
+      '--background',
+      colorSchemes[backgroundColor].background
+    );
+    document.body.style.setProperty(
+      '--foreground',
+      colorSchemes[backgroundColor].foreground
+    );
   }
 
   const proseElement = document.querySelector('.prose');
@@ -79,6 +110,6 @@ export type Theme = {
 export type PartialTheme = {
   heading?: Partial<ElementThemeProperties>;
   paragraph?: Partial<ElementThemeProperties>;
-  backgroundColor?: string;
+  backgroundColor?: ColorScheme;
   maxWidth?: number;
 };
