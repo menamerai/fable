@@ -2,7 +2,7 @@ import { useArticleTheme } from '@/components/article-theme-provider';
 import FontsSearch from '@/components/fonts-search';
 import { ArrowRight } from 'lucide-react';
 import { motion } from 'motion/react';
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 
 interface OnboardContextType {
   hasCompletedOnboarding: boolean;
@@ -24,7 +24,7 @@ interface OnboardProviderProps {
 }
 
 export function OnboardProvider({ children }: OnboardProviderProps) {
-  const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false);
+  const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(true);
   const { theme } = useArticleTheme();
 
   const completeOnboarding = () => {
@@ -59,7 +59,7 @@ export function OnboardProvider({ children }: OnboardProviderProps) {
                   className='text-muted-foreground'
                   style={{ fontFamily: theme.paragraph?.fontFamily }}
                 >
-                  To begin your journey,
+                  To begin, select
                 </motion.span>
               </div>
               <motion.span
@@ -69,7 +69,7 @@ export function OnboardProvider({ children }: OnboardProviderProps) {
                 className='text-muted-foreground'
                 style={{ fontFamily: theme.paragraph?.fontFamily }}
               >
-                select a theme that suits you and
+                a theme that suits you and
               </motion.span>
               <motion.div
                 // className='rounded-sm'
