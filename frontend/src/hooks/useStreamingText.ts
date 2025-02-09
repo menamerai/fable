@@ -7,13 +7,15 @@ export const useStreamingText = (onUpdate?: (text: string) => void) => {
   const count = useMotionValue(0);
 
   const start = async (prompt: string) => {
-    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/theme`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ prompt }),
-    });
+    setDisplayText('');
+    const response = await fetch(
+      `${
+        import.meta.env.VITE_BACKEND_URL
+      }/dyslexia?content=${encodeURIComponent(prompt)}`,
+      {
+        method: 'POST',
+      }
+    );
 
     const stream = response.body;
     if (!stream) throw new Error('No response stream');

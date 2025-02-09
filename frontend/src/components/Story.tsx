@@ -2,6 +2,7 @@ import { useArticleTheme } from '@/components/article-theme-provider';
 import { SentenceAudio } from '@/components/audio';
 import { useMemoryDb } from '@/hooks/useMemoryDb';
 import { defaultSentences, useSentences } from '@/hooks/useSentences';
+import { useStreamingText } from '@/hooks/useStreamingText';
 import { useWebSocket } from '@/hooks/useWebsocket';
 import {
   hasAudioPathDataset,
@@ -10,8 +11,9 @@ import {
 } from '@/lib/audio';
 import { markdownToHtml } from '@/lib/markdown';
 import { applyTheme } from '@/lib/theme';
-import { ArrowLeft } from 'lucide-react';
-import { useEffect, useRef } from 'react';
+import { cn } from '@/lib/utils';
+import { ArrowLeft, Lightbulb } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 
 export default function Story() {
@@ -127,11 +129,58 @@ export default function Story() {
     applyTheme(theme);
   }, [theme]);
 
+  const { start: startStreaming, displayText } = useStreamingText();
+
+  const [selectedText, setSelectedText] = useState('');
+  const [showDyslexiaText, setShowDyslexiaText] = useState(false);
+  const [dyslexiaTextPosition, setDyslexiaTextPosition] = useState({
+    top: 0,
+    left: 0,
+  });
+
+  const handleTextSelection = () => {
+    const selection = window.getSelection();
+    if (!selection || selection.toString().trim() === '') {
+      setShowDyslexiaText(false);
+      return;
+    }
+
+    const text = selection.toString();
+    setSelectedText(text);
+    setShowDyslexiaText(true);
+    setDyslexiaTextPosition({
+      top: selection.getRangeAt(0).getBoundingClientRect().bottom + 20,
+      left: selection.getRangeAt(0).getBoundingClientRect().left,
+    });
+    startStreaming(text);
+  };
+
   return (
     <div className='w-full flex justify-center'>
       <div className='fixed top-0 left-0 right-0 h-24 bg-gradient-to-b from-background to-transparent pointer-events-none z-10' />
 
       <SentenceAudio sentences={sentences} />
+
+      { (
+        <div
+          className={cn(
+            'fixed bg-background border rounded-lg p-4 shadow-lg z-40 max-w-2xl',
+            showDyslexiaText ? 'opacity-100' : 'opacity-0'
+          )}
+          style={{
+            top: dyslexiaTextPosition.top,
+            left: dyslexiaTextPosition.left,
+          }}
+        >
+          <div className='flex flex-col items-start gap-2'>
+            <div className='flex items-center justify-start gap-2'>
+              <Lightbulb className='w-5 h-5 text-cyan-500' strokeWidth={2} />
+              <h1 className='text-lg font-bold'>Dyslexia Help</h1>
+            </div>
+            <div className='text-lg'>{displayText}</div>
+          </div>
+        </div>
+      )}
 
       <div className='flex items-start gap-4 -translate-x-12 my-20'>
         <button
@@ -144,6 +193,7 @@ export default function Story() {
         <div
           className='prose dark:prose-invert w-[800px] prose-headings:font-serif prose-headings:tracking-wide prose-p:text-[24px]'
           ref={containerRef}
+          onMouseUp={handleTextSelection}
           dangerouslySetInnerHTML={{
             __html: html,
           }}

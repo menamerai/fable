@@ -1,4 +1,4 @@
-import { buttonVariants } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
   Tooltip,
@@ -9,10 +9,13 @@ import {
 import { UploadingDialog } from '@/components/uploading-dialog';
 import { useFileUpload } from '@/hooks/useFileUpload';
 import { useMemoryDb } from '@/hooks/useMemoryDb';
+import { useStreamingText } from '@/hooks/useStreamingText';
 import type { Book } from '@/types/book';
 import { LibraryBig, PlusIcon } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useNavigate } from 'react-router';
+import { useState } from 'react';
+
 function BookCard({
   book,
   onClick,
