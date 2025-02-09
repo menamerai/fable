@@ -1,0 +1,19 @@
+{
+  "name": "hackduke",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend && fastapi dev ./main.py"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/menamerai/hackduke.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/menamerai/hackduke/issues"
+  },
+  "homepage": "https://github.com/menamerai/hackduke#readme"
+}
