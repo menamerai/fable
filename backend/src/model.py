@@ -1,9 +1,9 @@
 import torchaudio
 from audiocraft.models import AudioGen, MAGNeT
 from audiocraft.data.audio import audio_write
-from chunk import chunk 
 
-def MAGNeT_inference(json_file: list):
+
+async def MAGNeT_inference(json_file: list):
     # model = AudioGen.get_pretrained('facebook/audiogen-medium')
     model = MAGNeT.get_pretrained("facebook/magnet-small-10secs")
 
@@ -22,7 +22,7 @@ def MAGNeT_inference(json_file: list):
         ],
         span_arrangement="stride1",
     )
-        
+
     # desc = """
     # Reflective Melody: Contemplative, introspective, melodic, soul-stirring
     # Narrative Journey: Evocative storytelling, lyrical narration, emotional depth
@@ -35,7 +35,7 @@ def MAGNeT_inference(json_file: list):
     # """
 
     desc = "6/8 70bpm 320kbps 48khz eerie ambient with distant choirs, detuned piano, and spectral synth pads in C# Phrygian"
-    
+
     N_VARIATIONS = 1
     descriptions = [desc for _ in range(N_VARIATIONS)]
 
@@ -43,9 +43,12 @@ def MAGNeT_inference(json_file: list):
 
     for idx, one_wav in enumerate(wav):
         # Will save under {idx}.wav, with loudness normalization at -14 db LUFS.
-        for inst in json_file: 
-            audio_write(f"{inst['audio_path'].with_suffix('')}", one_wav.cpu(), model.sample_rate, strategy="peak", loudness_compressor=True)
-    
-    
-if __name__ == "__main__": 
-    MAGNeT_inference(chunk())
+        for inst in json_file:
+            print(f"Saving audio to {inst['audio_path'].with_suffix('')}")
+            audio_write(
+                f"./{inst['audio_path'].with_suffix('')}",
+                one_wav.cpu(),
+                model.sample_rate,
+                strategy="peak",
+                loudness_compressor=True,
+            )

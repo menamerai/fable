@@ -8,6 +8,8 @@ from contextlib import asynccontextmanager
 import sys
 from pathlib import Path
 from shared import gesture_queue  # Update import
+from src.chunk import chunk_text
+from src.model import MAGNeT_inference
 
 # Add gestures.py to the Python path if it's in the same directory
 sys.path.append(str(Path(__file__).parent))
@@ -18,6 +20,7 @@ from gestures import run_gesture_detection
 load_dotenv()
 
 storage_path = os.getenv("STORAGE_FOLDER")
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -31,25 +34,46 @@ async def lifespan(app: FastAPI):
     except asyncio.CancelledError:
         pass
 
+
 app = FastAPI(lifespan=lifespan)
+
 
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
 
+
 @app.post("/upload")
 async def upload(file: UploadFile = File(...)):
     if file.content_type != "text/plain":
         return {"error": "Only .txt files are allowed"}
-    
-    # RUN PROCESSING FUNCTION HERE
-    # json_response = process_text(file.file.read())
+
     file_content = await file.read()
-    json_response = [
-        {"content": file_content.decode("utf-8"), "audio_path": f"{storage_path}/audio/sample.mp3"},
-    ]
-    
-    return {"message": f"File '{file.filename}' uploaded successfully to {storage_path}", "data": json_response}
+
+    # Ensure the storage path exists
+    os.makedirs(storage_path, exist_ok=True)
+
+    # Define the path to save the file
+    file_path = os.path.join(storage_path, "books", file.filename)
+
+    # Ensure the books directory exists
+    os.makedirs(os.path.dirname(file_path), exist_ok=True)
+
+    # Write the file content to the specified path
+    with open(file_path, "wb") as f:
+        f.write(file_content)
+
+    # Call chunk_text to process the file
+    json_response = chunk_text(Path(file_path))
+
+    # Kick off MAGNeT_inference as a background task
+    asyncio.create_task(MAGNeT_inference(json_response))
+
+    return {
+        "message": f"File '{file.filename}' uploaded successfully to {storage_path}",
+        "data": json_response,
+    }
+
 
 @app.get("/audio/{filename}")
 async def get_audio(filename: str):
