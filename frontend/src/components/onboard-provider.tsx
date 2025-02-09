@@ -1,6 +1,7 @@
 import { useArticleTheme } from '@/components/article-theme-provider';
 import FontsSearch from '@/components/fonts-search';
 import { Textarea } from '@/components/ui/textarea';
+import { motion } from 'motion/react';
 import { createContext, useContext, useEffect, useState } from 'react';
 
 interface OnboardContextType {
@@ -49,43 +50,52 @@ export function OnboardProvider({ children }: OnboardProviderProps) {
         <div className='w-full h-screen flex justify-center items-center'>
           <div className='flex items-start gap-8'>
             <article className='w-80 mt-2'>
-              <h1
+              <motion.h1
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1 }}
                 className='text-2xl font-bold mb-3 px-3'
                 style={{ fontFamily: theme.heading?.fontFamily }}
               >
                 Welcome to Storytime
-              </h1>
-              <p
-                className='text-muted-foreground px-3'
-                style={{ fontFamily: theme.paragraph?.fontFamily }}
+              </motion.h1>
+              <div className='px-3'>
+                {['To', 'begin', 'your', 'journey,'].map((word, i) => (
+                  <motion.span
+                    key={i}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 1.4 + i * 0.22, duration: 0.25 }}
+                    className='text-muted-foreground'
+                    style={{ fontFamily: theme.paragraph?.fontFamily }}
+                  >
+                    {word}{' '}
+                  </motion.span>
+                ))}
+              </div>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay:  3.4, duration: 2.0 }}
               >
-                To begin your journey,
-              </p>
-              <Textarea
-                rows={1}
-                placeholder='tell us your ideal reading experience...'
-                className='w-full md:text-base border-none hover:bg-muted focus:bg-muted focus-visible:ring-0 focus-visible:outline-none transition-all'
-                style={{ fontFamily: theme.paragraph?.fontFamily }}
-              />
+                <Textarea
+                  rows={1}
+                  placeholder='tell us your ideal reading experience...'
+                  className='w-full md:text-base border-none hover:bg-muted focus:bg-muted focus-visible:ring-0 focus-visible:outline-none transition-all'
+                  style={{ fontFamily: theme.paragraph?.fontFamily }}
+                />
+              </motion.div>
             </article>
-            <div className='w-80'>
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 5.0, duration: 1.2 }}
+              className='w-80'
+            >
               <FontsSearch />
-            </div>
+            </motion.div>
           </div>
         </div>
-
-        {/* <div className='flex flex-col items-center justify-center min-h-screen p-4'>
-          <h1 className='text-4xl font-bold mb-4'>Welcome to the Library</h1>
-          <p className='text-lg text-muted-foreground mb-8'>
-            Your personal reading sanctuary
-          </p>
-          <button
-            onClick={completeOnboarding}
-            className='px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90'
-          >
-            Get Started
-          </button>
-        </div> */}
       </OnboardContext.Provider>
     );
   }
