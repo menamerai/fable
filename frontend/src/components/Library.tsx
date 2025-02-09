@@ -6,6 +6,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { useWebSocket } from '@/hooks/useWebsocket';
 import { BOOKS } from '@/lib/data';
 import type { Book } from '@/types/book';
 import { LibraryBig, PlusIcon } from 'lucide-react';
@@ -64,6 +65,12 @@ export default function Library(): React.ReactElement {
   const handleAddBook = (file: File) => {
     console.log('File added:', file);
   };
+
+  // const onMessage = (message: string) => {
+  //   console.log('Message received:', message);
+  // };
+
+  // useWebSocket({ onMessage });
 
   return (
     <div className='w-screen h-screen flex flex-col justify-start items-center pt-4'>

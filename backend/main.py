@@ -1,6 +1,6 @@
 import os
-
-from fastapi import FastAPI, File, UploadFile
+import asyncio
+from fastapi import FastAPI, File, UploadFile, WebSocket
 from fastapi.responses import FileResponse
 from dotenv import load_dotenv
 
@@ -37,3 +37,17 @@ async def get_audio(filename: str):
     if os.path.exists(file_path):
         return FileResponse(file_path)
     return {"error": "File not found"}
+
+
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    try:
+        while True:
+            # Send "hello" message every second
+            await websocket.send_text("hello")
+            await asyncio.sleep(1)
+    except Exception as e:
+        print(f"WebSocket error: {e}")
+    finally:
+        await websocket.close()
