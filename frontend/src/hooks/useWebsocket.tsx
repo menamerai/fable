@@ -8,32 +8,28 @@ export const useWebSocket = ({ onMessage }: UseWebSocketProps) => {
   const wsRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
-    const ws = new WebSocket(
-      `ws://${import.meta.env.VITE_BACKEND_URL.replace('http://', '')}/ws`
-    );
+    // Only create connection if none exists
+    if (!wsRef.current) {
+      console.log('creating websocket');
+      const ws = new WebSocket(
+        `ws://${import.meta.env.VITE_BACKEND_URL.replace('http://', '')}/ws`
+      );
 
-    ws.onopen = () => {
-      console.log('WebSocket Connected');
-    };
+      ws.onopen = () => console.log('WebSocket Connected');
+      ws.onmessage = (event) => onMessage(event.data);
+      ws.onerror = console.error;
+      ws.onclose = () => console.log('WebSocket Disconnected');
 
-    ws.onmessage = (event) => {
-      onMessage(event.data);
-    };
-
-    ws.onerror = (error) => {
-      console.error('WebSocket error:', error);
-    };
-
-    ws.onclose = () => {
-      console.log('WebSocket Disconnected');
-    };
-
-    wsRef.current = ws;
+      wsRef.current = ws;
+    }
 
     return () => {
-      ws.close();
+      // Close only when component unmounts (not in dev StrictMode)
+      if (wsRef.current?.readyState === WebSocket.OPEN) {
+        wsRef.current.close();
+      }
     };
-  }, [onMessage]);
+  }, [onMessage]); // Ensure onMessage is memoized
 
   return wsRef.current;
 };

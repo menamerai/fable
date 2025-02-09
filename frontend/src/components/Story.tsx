@@ -1,4 +1,5 @@
 import { useArticleTheme } from '@/components/article-theme-provider';
+import { useWebSocket } from '@/hooks/useWebsocket';
 import { BOOKS } from '@/lib/data';
 import { markdownToHtml } from '@/lib/markdown';
 import { applyTheme } from '@/lib/theme';
@@ -11,6 +12,22 @@ export default function Story() {
   const navigate = useNavigate();
   const book = BOOKS.find((book) => book.id === id);
   const { theme } = useArticleTheme();
+
+  const onMessage = (message: string) => {
+    if (message === 'GESTURE_UP') {
+      window.scrollBy({
+        top: -400,
+        behavior: 'smooth',
+      });
+    } else if (message === 'GESTURE_FIST') {
+      window.scrollBy({
+        top: 400,
+        behavior: 'smooth',
+      });
+    }
+  };
+
+  useWebSocket({ onMessage });
 
   useEffect(() => {
     applyTheme(theme);
