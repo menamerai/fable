@@ -27,16 +27,11 @@ Rewrite the sentence below to be dyslexia-friendly. Do not output anything but t
 
 ---
 
-### **Expected Output Format (JSON)**
-Your response **must** be structured as a JSON object with:
-- `"revised_sentence"`: The final rewritten version.
+### **Expected Output Format (plaintext)**
+Your response **must** be the revised plaintext without any explanations
 
 Example Input: Comprehensive legislative frameworks require precise language to ensure clarity and compliance.
 
-Example Output:
-```json
-{
-  "revised_sentence": "Laws must be clear so everyone can understand and follow them.",
-}
+Example Output: Laws must be clear so everyone can understand and follow them.
 
 **Input Sentence:**
