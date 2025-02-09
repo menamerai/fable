@@ -36,12 +36,12 @@ def parse_book(file_path, output_folder, chapter_pattern):
 
 # Example usage:
 
-# Parsing "Alice's Adventures in Wonderland" (CHAPTER + Roman numerals)
-parse_book('backend/data/books/alice_in_wonderland.txt', 'backend/data/books/Alice_Chapters', r'(?=CHAPTER\s+[IVXLCDM]+)')
+# # Parsing "Alice's Adventures in Wonderland" (CHAPTER + Roman numerals)
+# parse_book('backend/data/books/alice_in_wonderland.txt', 'backend/data/books/Alice_Chapters', r'(?=CHAPTER\s+[IVXLCDM]+)')
 
-# Parsing "Treasure Island" (numbered chapters, starting with 1, 2, 3, etc.)
-parse_book('backend/data/books/treasure_island.txt', 'backend/data/books/Treasure_Island_Chapters', r'(?=\n\d+\n)')
+# # Parsing "Treasure Island" (numbered chapters, starting with 1, 2, 3, etc.)
+# parse_book('backend/data/books/treasure_island.txt', 'backend/data/books/Treasure_Island_Chapters', r'(?=\n\d+\n)')
 
-parse_book('backend/data/books/20000_leagues.txt', 'backend/data/books/20000_leagues_Chapters', r'(?=CHAPTER\s+[IVXLCDM]+)')
+# parse_book('backend/data/books/20000_leagues.txt', 'backend/data/books/20000_leagues_Chapters', r'(?=CHAPTER\s+[IVXLCDM]+)')
 
-parse_book('backend/data/books/gatsby.txt', 'backend/data/books/gatsby_Chapters', r'(?=Chapter\s+[1234567890]+)')
+# parse_book('backend/data/books/gatsby.txt', 'backend/data/books/gatsby_Chapters', r'(?=Chapter\s+[1234567890]+)')
