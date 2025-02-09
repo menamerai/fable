@@ -5,13 +5,13 @@ from audiocraft.data.audio import audio_write
 
 async def MAGNeT_inference(json_file: list, prompts: dict) -> None:
     # model = AudioGen.get_pretrained('facebook/audiogen-medium')
-    model = MAGNeT.get_pretrained("facebook/magnet-medium-10secs")
+    model = MAGNeT.get_pretrained("facebook/magnet-small-10secs")
 
     model.set_generation_params(
         use_sampling=True,
         top_k=2,
         top_p=0.9,
-        temperature=3,
+        temperature=5,
         max_cfg_coef=10.0,
         min_cfg_coef=1.0,
         decoding_steps=[

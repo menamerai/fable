@@ -2,7 +2,7 @@ import os
 import asyncio
 import json
 from fastapi import FastAPI, File, UploadFile, WebSocket
-from fastapi.responses import FileResponse, StreamingResponse
+from fastapi.responses import FileResponse, StreamingResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from asyncio import Queue
@@ -12,7 +12,11 @@ from pathlib import Path
 from shared import gesture_queue  # Update import
 from src.chunk import chunk_text
 from src.model import MAGNeT_inference
-from src.llm import gemini_generate_ambience, gemini_generate_music_prompt, gemini_dyslexia_fix
+from src.llm import (
+    gemini_generate_ambience,
+    gemini_generate_music_prompt,
+    gemini_dyslexia_fix,
+)
 
 # Add gestures.py to the Python path if it's in the same directory
 sys.path.append(str(Path(__file__).parent))
@@ -88,10 +92,12 @@ async def upload(file: UploadFile = File(...)):
     # kick off ambience generation as a background task
     asyncio.create_task(gemini_generate_ambience(file_path, json_response))
 
-    return {
-        "message": f"File '{file.filename}' uploaded successfully to {storage_path}",
-        "data": {"id": file.filename},
-    }
+    return JSONResponse(
+        content={
+            "message": f"File '{file.filename}' uploaded successfully to {storage_path}",
+            "data": {"id": file.filename},
+        }
+    )
 
 
 @app.get("/audio/{filename}")
@@ -100,7 +106,7 @@ async def get_audio(filename: str):
     print(file_path)
     if os.path.exists(file_path):
         return FileResponse(file_path)
-    return {"error": "File not found"}
+    return JSONResponse(content={"error": "File not found"}, status_code=404)
 
 
 @app.get("/ambient_audio/{filename}")
@@ -109,7 +115,7 @@ async def get_ambient_audio(filename: str):
     print(file_path)
     if os.path.exists(file_path):
         return FileResponse(file_path)
-    return {"error": "File not found"}
+    return JSONResponse(content={"error": "File not found"}, status_code=404)
 
 
 @app.get("/audio_status/{filename}")
@@ -123,7 +129,7 @@ async def get_audio_status(filename: str):
 
     if matching_files:
         return {"status": "ready", "files": matching_files}
-    return {"status": "processing"}
+    return JSONResponse(content={"status": "processing"}, status_code=404)
 
 
 @app.get("/ambient_audio_status/{filename}")
@@ -131,7 +137,7 @@ async def get_ambient_audio_status(filename: str):
     file_path = os.path.join(storage_path, "selection", filename)
     if os.path.exists(file_path):
         return {"status": "ready"}
-    return {"status": "processing"}
+    return JSONResponse(content={"status": "processing"}, status_code=404)
 
 
 @app.get("/selection/{filename}")
@@ -139,7 +145,7 @@ async def get_selection(filename: str):
     file_path = os.path.join(storage_path, "selection", filename)
     if os.path.exists(file_path):
         return FileResponse(file_path)
-    return {"error": "File not found"}
+    return JSONResponse(content={"error": "File not found"}, status_code=404)
 
 
 @app.websocket("/ws")
@@ -177,6 +183,8 @@ async def streaming(content: str):
         for chunk in gemini_dyslexia_fix(content):
             for word in chunk:
                 await asyncio.sleep(0.1)
-                yield json.dumps({"choices": [{"delta": {"content": word + " "}}]}) + "\n"
+                yield json.dumps(
+                    {"choices": [{"delta": {"content": word + " "}}]}
+                ) + "\n"
 
     return StreamingResponse(generate_text(content), media_type="application/json")
