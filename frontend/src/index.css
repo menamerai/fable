@@ -4,6 +4,37 @@
 
 @custom-variant dark (&:is(.dark *));
 
+.dark .highlight-transition {
+  color: #fff;
+  /* text-shadow: 0 0 10px #fff; */
+  animation: glow 2s linear infinite alternate;
+}
+
+.light .highlight-transition {
+  color: #000;
+  animation: glow-light 2s ease-in infinite alternate;
+}
+
+@keyframes glow {
+  from {
+    text-shadow: 0 0 0px;
+  }
+  to {
+    text-shadow: 0 0 7px #fff, /* Base white glow */ 0 0 21px #fff,
+      /* Medium white blur */ 0 0 42px #0fa,
+      /* Main color glow */ 0 0 50px rgba(0, 255, 170, 0.2); /* Subtle outer color glow */
+  }
+}
+
+@keyframes glow-light {
+  from {
+    text-shadow: 0 0 0px;
+  }
+  to {
+    text-shadow: 0 0 4px hsla(215.4, 16.3%, 46.9%, 0.5);
+  }
+}
+
 :root {
   --background: hsl(0 0% 100%);
   --foreground: hsl(0 0% 3.9%);
