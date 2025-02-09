@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 
 import { useArticleTheme } from '@/components/article-theme-provider';
+import { useTheme } from '@/components/theme-provider';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,12 +9,12 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Slider } from '@/components/ui/slider';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ColorScheme, colorSchemes } from '@/lib/theme';
 import { cn } from '@/lib/utils';
 import { Paintbrush } from 'lucide-react';
 
 const ThemeSettings = () => {
   const { theme, setTheme } = useArticleTheme();
+  const { theme: colourTheme, setTheme: setColourTheme } = useTheme();
 
   const setHeadingFontFamily = (fontFamily: string) => {
     setTheme({
@@ -205,8 +206,26 @@ const ThemeSettings = () => {
         </Tabs>
 
         {/* Color Selection */}
-        <div className='flex gap-2 mb-6 justify-between mt-6'>
-          {Object.keys(colorSchemes).map((color, index) => (
+        <div className='flex gap-4 mb-6 justify-center mt-6'>
+          <Button
+            variant={colourTheme === 'light' ? 'outline' : 'secondary'}
+            className={cn(
+              'w-12 h-12 rounded-full bg-white hover:bg-white/80',
+              colourTheme === 'light' && 'border-2 border-blue-400'
+            )}
+            onClick={() => setColourTheme('light')}
+          ></Button>
+
+          <Button
+            variant={colourTheme === 'dark' ? 'outline' : 'secondary'}
+            className={cn(
+              'w-12 h-12 rounded-full bg-black hover:bg-black/80',
+              colourTheme === 'dark' && 'border-2 border-blue-400'
+            )}
+            onClick={() => setColourTheme('dark')}
+          ></Button>
+
+          {/* {Object.keys(colorSchemes).map((color, index) => (
             <Button
               key={index}
               variant={
@@ -225,7 +244,7 @@ const ThemeSettings = () => {
                 })
               }
             />
-          ))}
+          ))} */}
         </div>
 
         {/* Max Width Slider */}
