@@ -35,12 +35,7 @@ export function useFileUpload() {
         const response = await fetch(
           `${import.meta.env.VITE_BACKEND_URL}/selection/${id}`
         );
-        const data = await response.json();
-        if (data.error) {
-          await new Promise((resolve) => setTimeout(resolve, 5000));
-          continue;
-        }
-        completed = data.status === 'ready';
+        completed = response.ok;
       }
 
       return id;
