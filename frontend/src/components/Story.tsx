@@ -177,7 +177,14 @@ export default function Story() {
               <Lightbulb className='w-5 h-5 text-cyan-500' strokeWidth={2} />
               <h1 className='text-lg font-bold'>Dyslexia Help</h1>
             </div>
-            <div className='text-lg'>{displayText}</div>
+            <div
+              className='text-lg'
+              style={{
+                fontFamily: 'Open-Dyslexic, sans-serif',
+              }}
+            >
+              {displayText}
+            </div>
           </div>
         </div>
       )}

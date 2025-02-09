@@ -7,6 +7,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { BrowserRouter } from 'react-router';
 
 const queryClient = new QueryClient();
 
@@ -14,13 +15,15 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <ArticleThemeProvider>
-      <ThemeProvider defaultTheme='dark' storageKey='vite-ui-theme'>
-        <OnboardProvider>
-          <div className='fixed top-4 left-4 flex gap-2'>
-            <ThemeSettings />
-          </div>
-          <App />
-        </OnboardProvider>
+        <ThemeProvider defaultTheme='dark' storageKey='vite-ui-theme'>
+          <BrowserRouter>
+            <OnboardProvider>
+              <div className='fixed top-4 left-4 flex gap-2'>
+                <ThemeSettings />
+              </div>
+              <App />
+            </OnboardProvider>
+          </BrowserRouter>
         </ThemeProvider>
       </ArticleThemeProvider>
     </QueryClientProvider>

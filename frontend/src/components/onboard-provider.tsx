@@ -3,6 +3,7 @@ import FontsSearch from '@/components/fonts-search';
 import { ArrowRight } from 'lucide-react';
 import { motion } from 'motion/react';
 import { createContext, useContext, useState } from 'react';
+import { useNavigate } from 'react-router';
 
 interface OnboardContextType {
   hasCompletedOnboarding: boolean;
@@ -26,8 +27,10 @@ interface OnboardProviderProps {
 export function OnboardProvider({ children }: OnboardProviderProps) {
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false);
   const { theme } = useArticleTheme();
+  const navigate = useNavigate();
 
   const completeOnboarding = () => {
+    navigate('/');
     setHasCompletedOnboarding(true);
   };
 
