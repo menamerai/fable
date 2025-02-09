@@ -11,7 +11,7 @@ from pathlib import Path
 from shared import gesture_queue  # Update import
 from src.chunk import chunk_text
 from src.model import MAGNeT_inference
-from src.llm import gemini_generate_ambience
+from src.llm import gemini_generate_ambience, gemini_generate_music_prompt
 
 # Add gestures.py to the Python path if it's in the same directory
 sys.path.append(str(Path(__file__).parent))
@@ -78,8 +78,11 @@ async def upload(file: UploadFile = File(...)):
     # Call chunk_text to process the file
     json_response = chunk_text(Path(file_path))
 
+    # generate music prompt
+    prompts = gemini_generate_music_prompt(json_response)
+
     # Kick off MAGNeT_inference as a background task
-    asyncio.create_task(MAGNeT_inference(json_response))
+    asyncio.create_task(MAGNeT_inference(json_response, prompts))
 
     # kick off ambience generation as a background task
     asyncio.create_task(gemini_generate_ambience(file_path, json_response))
