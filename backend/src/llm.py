@@ -5,7 +5,7 @@ from pathlib import Path
 from ambience_retriever import get_ambience_file
 import json
 
-def generate(text_file: str) -> str:
+def gemini_generate_ambience(text_file: str, json_file: list) -> str:
     load_dotenv()
     templates_path = Path("./templates")
     data_path = Path("./data")
@@ -19,9 +19,14 @@ def generate(text_file: str) -> str:
     
     with open(data_path / text_file, "r") as f: 
         text = f.read()
+
+    start_text = json_file[0]["text"]
+    end_text = json_file[1]["text"]
+
+    # remove start and end text because they already have their own audio files
+    text = text.replace(start_text, "").replace(end_text, "")
     
     prompt = f"{guide_text}\n\n{text}"
-    # print("Prompt: \n", prompt)
     
     response = client.models.generate_content(
         model="gemini-2.0-flash", contents=prompt
@@ -31,7 +36,6 @@ def generate(text_file: str) -> str:
     json_data = json.loads(response_text)
     
     output = []
-    
     
     for audio_desc in json_data: 
         temp = {} 
@@ -46,5 +50,4 @@ def main():
     print("Me when I'm Rai!")
     
 if __name__ == "__main__": 
-    generate("lastquestion.txt")
     main()
