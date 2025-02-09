@@ -65,6 +65,18 @@ async def upload(file: UploadFile = File(...)):
     if file.content_type != "text/plain":
         return {"error": "Only .txt files are allowed"}
 
+    filename = file.filename
+    filenameJson = filename.replace(".txt", ".json")
+    file_path = os.path.join(storage_path, "selection", filenameJson)
+    if os.path.exists(file_path):
+        return JSONResponse(
+            content={
+                "message": f"File '{file.filename}' already exists in {storage_path}",
+                "data": {"id": file.filename},
+            }
+        )
+
+
     file_content = await file.read()
 
     # Ensure the storage path exists
