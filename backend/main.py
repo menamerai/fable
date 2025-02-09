@@ -10,10 +10,12 @@ from pathlib import Path
 from shared import gesture_queue  # Update import
 from src.chunk import chunk_text
 from src.model import MAGNeT_inference
+from src.llm import gemini_generate_ambience
 
 # Add gestures.py to the Python path if it's in the same directory
 sys.path.append(str(Path(__file__).parent))
 from gestures import run_gesture_detection
+import re
 
 # from inference import process_text
 
@@ -69,6 +71,9 @@ async def upload(file: UploadFile = File(...)):
     # Kick off MAGNeT_inference as a background task
     asyncio.create_task(MAGNeT_inference(json_response))
 
+    # kick off ambience generation as a background task
+    asyncio.create_task(gemini_generate_ambience(file_path, json_response))
+
     return {
         "message": f"File '{file.filename}' uploaded successfully to {storage_path}",
         "data": json_response,
@@ -83,13 +88,40 @@ async def get_audio(filename: str):
         return FileResponse(file_path)
     return {"error": "File not found"}
 
+@app.get("/ambient_audio/{filename}")
+async def get_ambient_audio(filename: str):
+    file_path = os.path.join(storage_path, "ambient", filename)
+    print(file_path)
+    if os.path.exists(file_path):
+        return FileResponse(file_path)
+    return {"error": "File not found"}
+
 @app.get("/audio_status/{filename}")
 async def get_audio_status(filename: str):
-    file_path = os.path.join(storage_path, "music", filename)
+    # List all files in the music directory
+    music_files = os.listdir(os.path.join(storage_path, "music"))
+
+    # Use regex to find files that match the filename pattern
+    pattern = re.compile(rf"^{re.escape(filename)}.*\.wav$")
+    matching_files = [f for f in music_files if pattern.match(f)]
+
+    if matching_files:
+        return {"status": "ready", "files": matching_files}
+    return {"status": "processing"}
+
+@app.get("/ambient_audio_status/{filename}")
+async def get_ambient_audio_status(filename: str):
+    file_path = os.path.join(storage_path, "selection", filename)
     if os.path.exists(file_path):
         return {"status": "ready"}
     return {"status": "processing"}
 
+@app.get("/selection/{filename}")
+async def get_selection(filename: str):
+    file_path = os.path.join(storage_path, "selection", filename)
+    if os.path.exists(file_path):
+        return FileResponse(file_path)
+    return {"error": "File not found"}
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
