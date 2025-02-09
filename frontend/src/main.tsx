@@ -6,10 +6,14 @@ import ThemeSettings from '@/components/theme-settings.tsx';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient();
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <ArticleThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <ArticleThemeProvider>
       <ThemeProvider defaultTheme='dark' storageKey='vite-ui-theme'>
         <OnboardProvider>
           <div className='fixed top-4 left-4 flex gap-2'>
@@ -17,7 +21,8 @@ createRoot(document.getElementById('root')!).render(
           </div>
           <App />
         </OnboardProvider>
-      </ThemeProvider>
-    </ArticleThemeProvider>
+        </ThemeProvider>
+      </ArticleThemeProvider>
+    </QueryClientProvider>
   </StrictMode>
 );

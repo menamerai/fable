@@ -1,5 +1,12 @@
 import { useArticleTheme } from '@/components/article-theme-provider';
+import { SentenceAudio } from '@/components/audio';
+import { defaultSentences, useSentences } from '@/hooks/useSentences';
 import { useWebSocket } from '@/hooks/useWebsocket';
+import {
+  hasAudioPathDataset,
+  playAudioById,
+  processAudioSentences,
+} from '@/lib/audio';
 import { BOOKS } from '@/lib/data';
 import { markdownToHtml } from '@/lib/markdown';
 import { applyTheme } from '@/lib/theme';
@@ -12,6 +19,9 @@ export default function Story() {
   const navigate = useNavigate();
   const book = BOOKS.find((book) => book.id === id);
 
+  // TODO: don't hardcode this
+  const { data: sentences = defaultSentences } = useSentences('lastquestion');
+
   const { theme } = useArticleTheme();
   const html = markdownToHtml(
     book?.markdown ??
@@ -21,26 +31,18 @@ export default function Story() {
 
   useEffect(() => {
     if (!containerRef.current) return;
+    if (!sentences.start) return;
 
     // Process the HTML to wrap specific sentences with span tags
     const processHtml = (htmlContent: string) => {
       // Example sentences to match - you would customize this based on your needs
-      const sentences = [
-        'The artist',
-        'dislike of Realism',
-        'The studio was filled with',
-        'long tussore-silk',
-        'What odd chaps you painters are!',
-        'Dorian Gray? Is that his name?'
-      ];
+      const processedHtml = htmlContent;
+      // sentences.forEach((sentence, index) => {
+      //   const wrappedSentence = `<span data-highlight-id="${index}" class="highlight-target">${sentence}</span>`;
+      //   processedHtml = processedHtml.replace(sentence, wrappedSentence);
+      // });
 
-      let processedHtml = htmlContent;
-      sentences.forEach((sentence, index) => {
-        const wrappedSentence = `<span data-highlight-id="${index}" class="highlight-target">${sentence}</span>`;
-        processedHtml = processedHtml.replace(sentence, wrappedSentence);
-      });
-
-      return processedHtml;
+      return processAudioSentences(processedHtml, sentences);
     };
 
     const setupObservers = () => {
@@ -60,12 +62,23 @@ export default function Story() {
                 detail: { id: highlightId },
               });
               window.dispatchEvent(event);
-
-              // // Optional: Remove observer after triggering
-              // observer.unobserve(entry.target);
             } else {
               entry.target.classList.remove('highlight-glow');
               entry.target.classList.remove('highlight-transition');
+            }
+
+            if (hasAudioPathDataset(entry.target)) {
+              if (entry.isIntersecting) {
+                playAudioById(
+                  (entry.target as HTMLElement).dataset.audioPath ?? 'no-id',
+                  'fade-in'
+                );
+              } else {
+                playAudioById(
+                  (entry.target as HTMLElement).dataset.audioPath ?? 'no-id',
+                  'fade-out'
+                );
+              }
             }
           });
         },
@@ -91,7 +104,7 @@ export default function Story() {
 
     // Cleanup
     return () => observer?.disconnect();
-  }, [html]);
+  }, [html, sentences]);
 
   const onMessage = (message: string) => {
     const viewportHeight = window.innerHeight;
@@ -122,6 +135,9 @@ export default function Story() {
   return (
     <div className='w-full flex justify-center'>
       <div className='fixed top-0 left-0 right-0 h-24 bg-gradient-to-b from-background to-transparent pointer-events-none z-10' />
+
+      <SentenceAudio sentences={sentences} />
+
       <div className='flex items-start gap-4 -translate-x-12 my-20'>
         <button
           onClick={() => navigate('/')}
@@ -129,8 +145,9 @@ export default function Story() {
         >
           <ArrowLeft className='w-6 h-6' />
         </button>
+
         <div
-          className='prose dark:prose-invert w-[800px] prose-headings:font-serif prose-headings:tracking-wide'
+          className='prose dark:prose-invert w-[800px] prose-headings:font-serif prose-headings:tracking-wide prose-p:text-[24px]'
           ref={containerRef}
           dangerouslySetInnerHTML={{
             __html: html,
