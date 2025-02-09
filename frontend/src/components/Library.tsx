@@ -68,7 +68,7 @@ export default function Library(): React.ReactElement {
   };
 
   const handleAddBook = async (file: File) => {
-    upload(file);
+    await upload(file);
     const text = await file.text();
     const title = file.name.split('.')[0];
 

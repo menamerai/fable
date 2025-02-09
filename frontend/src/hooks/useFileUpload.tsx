@@ -48,7 +48,7 @@ export function useFileUpload() {
   });
 
   return {
-    upload: uploadMutation.mutate,
+    upload: uploadMutation.mutateAsync,
     isUploading: uploadMutation.isPending,
     error: uploadMutation.error,
   };
