@@ -193,10 +193,9 @@ async def streaming(content: str):
 
         # Call dyslexia fix function
         for chunk in gemini_dyslexia_fix(content):
-            for word in chunk:
-                await asyncio.sleep(0.1)
-                yield json.dumps(
-                    {"choices": [{"delta": {"content": word + " "}}]}
-                ) + "\n"
+            await asyncio.sleep(0.1)
+            yield json.dumps(
+                {"choices": [{"delta": {"content": chunk + " "}}]}
+            ) + "\n"
 
     return StreamingResponse(generate_text(content), media_type="application/json")
