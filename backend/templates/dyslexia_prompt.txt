@@ -25,4 +25,18 @@ Optimize for these readability metrics:
 ### **Process**
 Rewrite the sentence below to be dyslexia-friendly.
 
+---
+
+### **Expected Output Format (JSON)**
+Your response **must** be structured as a JSON object with:
+- `"revised_sentence"`: The final rewritten version.
+
+Example Input: Comprehensive legislative frameworks require precise language to ensure clarity and compliance.
+
+Example Output:
+```json
+{
+  "revised_sentence": "Laws must be clear so everyone can understand and follow them.",
+}
+
 **Input Sentence:**
