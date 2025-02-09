@@ -1,6 +1,6 @@
 import { useArticleTheme } from '@/components/article-theme-provider';
 import FontsSearch from '@/components/fonts-search';
-import { Textarea } from '@/components/ui/textarea';
+import { ArrowRight } from 'lucide-react';
 import { motion } from 'motion/react';
 import { createContext, useContext, useEffect, useState } from 'react';
 
@@ -24,18 +24,10 @@ interface OnboardProviderProps {
 }
 
 export function OnboardProvider({ children }: OnboardProviderProps) {
-  const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(true);
+  const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false);
   const { theme } = useArticleTheme();
 
-  useEffect(() => {
-    const onboardingStatus = localStorage.getItem('hasCompletedOnboarding');
-    if (onboardingStatus === 'true') {
-      setHasCompletedOnboarding(true);
-    }
-  }, []);
-
   const completeOnboarding = () => {
-    localStorage.setItem('hasCompletedOnboarding', 'true');
     setHasCompletedOnboarding(true);
   };
 
@@ -48,42 +40,52 @@ export function OnboardProvider({ children }: OnboardProviderProps) {
     return (
       <OnboardContext.Provider value={value}>
         <div className='w-full h-screen flex justify-center items-center'>
-          <div className='flex items-start gap-8'>
+          <div className='flex items-start gap-4'>
             <article className='w-80 mt-2'>
               <motion.h1
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1 }}
-                className='text-2xl font-bold mb-3 px-3'
+                className='text-2xl font-bold mb-3'
                 style={{ fontFamily: theme.heading?.fontFamily }}
               >
                 Welcome to Storytime
               </motion.h1>
-              <div className='px-3'>
-                {['To', 'begin', 'your', 'journey,'].map((word, i) => (
-                  <motion.span
-                    key={i}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 1.4 + i * 0.22, duration: 0.25 }}
-                    className='text-muted-foreground'
-                    style={{ fontFamily: theme.paragraph?.fontFamily }}
-                  >
-                    {word}{' '}
-                  </motion.span>
-                ))}
+              <div className=''>
+                <motion.span
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 1.4, duration: 1.5 }}
+                  className='text-muted-foreground'
+                  style={{ fontFamily: theme.paragraph?.fontFamily }}
+                >
+                  To begin your journey,
+                </motion.span>
               </div>
-              <motion.div
+              <motion.span
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay:  3.4, duration: 2.0 }}
+                transition={{ delay: 2.5, duration: 1.5 }}
+                className='text-muted-foreground'
+                style={{ fontFamily: theme.paragraph?.fontFamily }}
               >
-                <Textarea
-                  rows={1}
-                  placeholder='tell us your ideal reading experience...'
-                  className='w-full md:text-base border-none hover:bg-muted focus:bg-muted focus-visible:ring-0 focus-visible:outline-none transition-all'
-                  style={{ fontFamily: theme.paragraph?.fontFamily }}
-                />
+                select a theme that suits you and
+              </motion.span>
+              <motion.div
+                // className='rounded-sm'
+                initial={{
+                  opacity: 0,
+                }}
+                animate={{
+                  opacity: 1,
+                }}
+                transition={{ delay: 3.9, duration: 1.5 }}
+                className='text-foreground underline group cursor-pointer'
+                style={{ fontFamily: theme.paragraph?.fontFamily }}
+                onClick={completeOnboarding}
+              >
+                continue your journey
+                <ArrowRight className='ml-2 w-4 h-4 inline-block group-hover:translate-x-1 transition-transform duration-300' />
               </motion.div>
             </article>
             <motion.div
