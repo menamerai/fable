@@ -156,7 +156,7 @@ export default function Story() {
   };
 
   return (
-    <div className='w-full flex justify-center'>
+    <div className='w-full flex justify-center' onMouseUp={handleTextSelection}>
       <div className='fixed top-0 left-0 right-0 h-24 bg-gradient-to-b from-background to-transparent pointer-events-none z-10' />
 
       <SentenceAudio sentences={sentences} />
@@ -200,7 +200,6 @@ export default function Story() {
         <div
           className='prose dark:prose-invert w-[800px] prose-headings:font-serif prose-headings:tracking-wide prose-p:text-[24px]'
           ref={containerRef}
-          onMouseUp={handleTextSelection}
           dangerouslySetInnerHTML={{
             __html: html,
           }}
