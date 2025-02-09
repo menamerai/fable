@@ -14,14 +14,20 @@ export default function Story() {
   const { theme } = useArticleTheme();
 
   const onMessage = (message: string) => {
+    const viewportHeight = window.innerHeight;
+    const scrollAmount = viewportHeight * 0.8; // Scroll 80% of viewport
+    const maxScroll = document.documentElement.scrollHeight - viewportHeight;
+
     if (message === 'GESTURE_UP') {
-      window.scrollBy({
-        top: -400,
+      const newPos = window.scrollY - scrollAmount;
+      window.scrollTo({
+        top: newPos >= 0 ? newPos : 0,
         behavior: 'smooth',
       });
     } else if (message === 'GESTURE_FIST') {
-      window.scrollBy({
-        top: 400,
+      const newPos = window.scrollY + scrollAmount;
+      window.scrollTo({
+        top: newPos <= maxScroll ? newPos : maxScroll,
         behavior: 'smooth',
       });
     }
@@ -34,8 +40,9 @@ export default function Story() {
   }, [theme]);
 
   return (
-    <div className='w-full flex justify-center py-16 '>
-      <div className='flex items-start gap-4 -translate-x-12'>
+    <div className='w-full flex justify-center'>
+      <div className='fixed top-0 left-20 right-0 h-28 bg-gradient-to-b from-background to-transparent pointer-events-none z-10' />
+      <div className='flex items-start gap-4 -translate-x-12 my-20'>
         <button
           onClick={() => navigate('/')}
           className='p-2 hover:bg-muted rounded-full hover:-translate-x-2 transition-all cursor-pointer'
@@ -54,6 +61,7 @@ export default function Story() {
           }}
         />
       </div>
+      <div className='fixed bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-background to-transparent pointer-events-none z-30' />
     </div>
   );
 }
