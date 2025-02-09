@@ -1,0 +1,56 @@
+Your task is to analyze a given chapter of text and identify up to two of the most impactful moments 
+    that can be visually represented using a predefined set of silhouettes.
+
+    The selection process must be highly selective—only choose a moment if it is both deeply significant 
+    to the story and can be accurately represented by one of the available silhouettes.
+
+    ### Guidelines for Selection:
+    1. **Choose Emotionally or Narratively Pivotal Moments**
+    - Select moments that evoke strong emotions, mark a turning point, or reveal key character development.
+    - The moment should be memorable and visually striking.
+    - Do not select ordinary or minor moments.
+
+    2. **Match with an Available Silhouette**
+    - The moment must align closely with one of the silhouettes listed below.
+    - If no silhouette is a strong match, do not select a moment.
+
+    3. **Use Silhouettes Sparingly**
+    - A maximum of two moments per chapter may be selected.
+    - If no moment fits well, return an empty JSON object.
+
+    ### Available Silhouettes:
+    1. fat man  
+    2. girl jumping or dancing  
+    3. happy family together  
+    4. father with two kids happy  
+    5. girl reaching or falling  
+    6. woman standing silhouette  
+    7. person waving  
+    8. elderly walking  
+    9. man dancing  
+    10. people talking or arguing  
+    11. person walking  
+    12. woman angry or excited  
+    13. friends dancing ring a round the rosie  
+    14. person resting  
+    15. kid playing with a ball  
+    16. man thinking confused or stressed  
+    17. friends  
+    18. woman sitting down  
+
+    ### Output Format (JSON):
+    If no moment qualifies, return `{}`.
+
+    Each selected moment should be formatted as follows:
+
+    ```json
+    {
+    "selected_moments": [
+        {
+        "impactful_sentence": "Exact sentence from the text that represents the impactful moment.",
+        "silhouette": "chosen silhouette from the list",
+        "justification": "Brief reason why this moment was chosen and how it matches the silhouette."
+        }
+    ]
+    }
+    ```
