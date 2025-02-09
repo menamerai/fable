@@ -28,7 +28,7 @@ export function useFileUpload() {
       };
 
       // TODO loop until the file is ready
-      const id = data.data.id;
+      const id = data.data.id.replace('.txt', '.json');
 
       let completed = false;
       while (!completed) {
