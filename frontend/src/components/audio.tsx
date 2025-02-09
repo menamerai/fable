@@ -33,7 +33,7 @@ export function SentenceAudio({ sentences }: { sentences?: Sentences }) {
       )}
       {sentences.ambience.map((ambience) => (
         <audio
-          key={ambience.audio_path}
+          key={ambience.audio_path + ambience.text.slice(0, 10)}
           preload='metadata'
           loop
           id={ambience.audio_path}
