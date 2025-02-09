@@ -23,7 +23,7 @@ Optimize for these readability metrics:
 ---
 
 ### **Process**
-Rewrite the sentence below to be dyslexia-friendly.
+Rewrite the sentence below to be dyslexia-friendly. Do not output anything but the rewritten sentence.
 
 ---
 

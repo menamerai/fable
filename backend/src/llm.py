@@ -1,8 +1,10 @@
 import os
+import json
 from dotenv import load_dotenv
 from google import genai
 from pathlib import Path
-import json
+from typing import Generator
+
 
 # Define the folder path
 AMBIENCE_FOLDER_PATH = Path("./data/ambience")
@@ -43,7 +45,7 @@ sound_files = {
     "Office sounds": "mixkit-office-ambience-447.wav",
     "Restaurant crowd talking": "mixkit-restaurant-crowd-talking-ambience-444.wav",
     "Futuristic sci-fi computer": "mixkit-futuristic-sci-fi-computer-ambience-2507.wav",
-    "People in fair with laughter": "mixkit-people-in-fair-ambience-and-laughter-368.wav"
+    "People in fair with laughter": "mixkit-people-in-fair-ambience-and-laughter-368.wav",
 }
 
 # Mapping of shadow descriptions to file names
@@ -65,34 +67,37 @@ shadow_files = {
     "kid playing with a ball": "noun-kid-playing-with-a-ball-5312132.svg",
     "man thinking confused or stressed": "noun-man-thinking-confused-or-stressed-6199629.svg",
     "friends": "noun-friends-5048354.svg",
-    "woman sitting down": "noun-woman-sitting-down-4962003.svg"
+    "woman sitting down": "noun-woman-sitting-down-4962003.svg",
 }
+
 
 def get_ambience_file(ambience_name):
     """
     Returns the absolute file path for the given ambience name.
-    
+
     :param ambience_name: The descriptive name of the ambience.
     :return: Full file path of the corresponding sound file or None if not found.
     """
     if ambience_name in sound_files:
-        return AMBIENCE_FOLDER_PATH / sound_files[ambience_name] 
+        return AMBIENCE_FOLDER_PATH / sound_files[ambience_name]
     else:
         print(f"Warning: Ambience '{ambience_name}' not found.")
         return None
 
+
 def get_shadow_file(shadow_name):
     """
     Returns the absolute file path for the given shadow name.
-    
+
     :param shadow_name: The descriptive name of the shadow.
     :return: Full file path of the corresponding sound file or None if not found.
     """
     if shadow_name in shadow_files:
-        return SHADOWS_FOLDER_PATH / shadow_files[shadow_name] 
+        return SHADOWS_FOLDER_PATH / shadow_files[shadow_name]
     else:
         print(f"Warning: Shadow '{shadow_name}' not found.")
         return None
+
 
 async def gemini_generate_ambience(text_file: str, json_file: list) -> str:
     load_dotenv()
@@ -101,12 +106,12 @@ async def gemini_generate_ambience(text_file: str, json_file: list) -> str:
     templates_path.mkdir(parents=True, exist_ok=True)
 
     guide_path = templates_path / "daniel_sample.txt"
-    
+
     client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
-    with open(guide_path, "r", encoding='utf-8') as f:
+    with open(guide_path, "r", encoding="utf-8") as f:
         guide_text = f.read()
-    
-    with open(text_file, "r") as f: 
+
+    with open(text_file, "r") as f:
         text = f.read()
 
     start_text = json_file[0]["text"]
@@ -114,33 +119,31 @@ async def gemini_generate_ambience(text_file: str, json_file: list) -> str:
 
     # remove start and end text because they already have their own audio files
     text = text.replace(start_text, "").replace(end_text, "")
-    
+
     prompt = f"{guide_text}\n\n{text}"
-    
-    response = client.models.generate_content(
-        model="gemini-2.0-flash", contents=prompt
-    )
-    
+
+    response = client.models.generate_content(model="gemini-2.0-flash", contents=prompt)
+
     response_text = response.text.lstrip("```json").rstrip("```")
     json_data = json.loads(response_text)
-    
+
     output = []
-    
-    for audio_desc in json_data: 
-        temp = {} 
+
+    for audio_desc in json_data:
+        temp = {}
         temp["audio_path"] = get_ambience_file(audio_desc["ambience"]).name
-        temp["text"] = audio_desc["text"]  
+        temp["text"] = audio_desc["text"]
         output.append(temp)
 
     json_file[0]["audio_path"] = json_file[0]["audio_path"].name
     json_file[1]["audio_path"] = json_file[1]["audio_path"].name
-    
-    with open(data_path / "selection" / f"{Path(text_file).stem}.json", "w") as f: 
-        json.dump({
-            "start": json_file[0],
-            "end": json_file[1],
-            "ambience": output
-        }, f, indent=4)
+
+    with open(data_path / "selection" / f"{Path(text_file).stem}.json", "w") as f:
+        json.dump(
+            {"start": json_file[0], "end": json_file[1], "ambience": output},
+            f,
+            indent=4,
+        )
 
 
 def gemini_generate_music_prompt(json_file: list) -> str:
@@ -152,7 +155,7 @@ def gemini_generate_music_prompt(json_file: list) -> str:
     guide_path = templates_path / "gemini_gen_music.txt"
 
     client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
-    with open(guide_path, "r", encoding='utf-8') as f:
+    with open(guide_path, "r", encoding="utf-8") as f:
         guide_text = f.read()
 
     start_segment = json_file[0]["text"]
@@ -174,12 +177,7 @@ def gemini_generate_music_prompt(json_file: list) -> str:
     json_data_start = json.loads(response_text_start).get("prompt", "")
     json_data_end = json.loads(response_text_end).get("prompt", "")
 
-    return {
-        "start": json_data_start,
-        "end": json_data_end
-    }
-
-
+    return {"start": json_data_start, "end": json_data_end}
 
 
 async def gemini_get_shadow(text_file: str) -> str:
@@ -192,40 +190,59 @@ async def gemini_get_shadow(text_file: str) -> str:
     guide_path = templates_path / "shadow_prompt.txt"
 
     client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
-    with open(guide_path, "r", encoding='utf-8') as f:
+    with open(guide_path, "r", encoding="utf-8") as f:
         guide_text = f.read()
-    
-    with open(text_file, "r") as f: 
+
+    with open(text_file, "r") as f:
         text = f.read()
-    
+
     prompt = f"{guide_text}\n\n{text}"
-    
-    response = client.models.generate_content(
-        model="gemini-2.0-flash", contents=prompt
-    )
-    
+
+    response = client.models.generate_content(model="gemini-2.0-flash", contents=prompt)
+
     response_text = response.text.lstrip("```json").rstrip("```")
     json_data = json.loads(response_text)
-    
+
     output = []
     for entry in json_data.get("selected_moments", []):
         shadow_path = get_shadow_file(entry["silhouette"])
         if shadow_path:
-            output.append({
-                "impactful_sentence": entry["impactful_sentence"],
-                "shadow_path": str(shadow_path)
-            })
-    
+            output.append(
+                {
+                    "impactful_sentence": entry["impactful_sentence"],
+                    "shadow_path": str(shadow_path),
+                }
+            )
+
     # Ensure the directory exists before writing the file
     output_file = data_path / f"{Path(text_file).stem}.json"
-    
-    with open(output_file, "w") as f: 
+
+    with open(output_file, "w") as f:
         json.dump(output, f, indent=4)
 
     print(f"Shadow data saved to: {output_file}")
 
+def gemini_dyslexia_fix(content: str) -> Generator[str, None, None]:
+    load_dotenv()
+    templates_path = Path("./templates")
+    templates_path.mkdir(parents=True, exist_ok=True)
+
+    guide_path = templates_path / "dyslexia_prompt.txt"
+
+    client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
+    with open(guide_path, "r", encoding="utf-8") as f:
+        guide_text = f.read()
+
+    prompt = f"{guide_text}\n\n{content}"
+
+    for chunk in client.models.generate_content_stream(model="gemini-2.0-flash", contents=prompt):
+        yield chunk.text
+
+
 def main():
-    print("Me when I'm Rai!")
-    
-if __name__ == "__main__": 
+    for chunk in gemini_dyslexia_fix("But all collected data had yet to be completely correlated and put together in all possible relationships."):
+        print(chunk)
+
+
+if __name__ == "__main__":
     main()
