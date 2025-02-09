@@ -23,7 +23,7 @@ export default function Story() {
   const book = books.find((book) => book.id === id);
 
   const { data: sentences = defaultSentences } = useSentences(
-    book?.title ?? ''
+    book?.id ?? ''
   );
 
   const { theme } = useArticleTheme();

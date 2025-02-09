@@ -24,7 +24,7 @@ interface OnboardProviderProps {
 }
 
 export function OnboardProvider({ children }: OnboardProviderProps) {
-  const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(true);
+  const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false);
   const { theme } = useArticleTheme();
 
   const completeOnboarding = () => {

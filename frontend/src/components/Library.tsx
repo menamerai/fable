@@ -1,4 +1,4 @@
-import { Button, buttonVariants } from '@/components/ui/button';
+import { buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
   Tooltip,
@@ -9,12 +9,10 @@ import {
 import { UploadingDialog } from '@/components/uploading-dialog';
 import { useFileUpload } from '@/hooks/useFileUpload';
 import { useMemoryDb } from '@/hooks/useMemoryDb';
-import { useStreamingText } from '@/hooks/useStreamingText';
 import type { Book } from '@/types/book';
 import { LibraryBig, PlusIcon } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useNavigate } from 'react-router';
-import { useState } from 'react';
 
 function BookCard({
   book,
@@ -71,16 +69,27 @@ export default function Library(): React.ReactElement {
   };
 
   const handleAddBook = async (file: File) => {
-    await upload(file);
     const text = await file.text();
     const title = file.name.split('.')[0];
 
-    addBook({
-      id: file.name,
-      title: title,
-      author: 'Test',
-      markdown: text,
-    });
+    if (title === 'lastquestion') {
+      addBook({
+        id: title,
+        title: 'The Last Question',
+        author: 'Isaac Asimov',
+        markdown: text,
+        imageUrl:
+          'https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1274107046i/4808763.jpg',
+      });
+    } else {
+      addBook({
+        id: file.name,
+        title: title,
+        author: 'Test',
+        markdown: text,
+      });
+    }
+    await upload(file);
   };
 
   return (
