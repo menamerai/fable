@@ -83,6 +83,13 @@ async def get_audio(filename: str):
         return FileResponse(file_path)
     return {"error": "File not found"}
 
+@app.get("/audio_status/{filename}")
+async def get_audio_status(filename: str):
+    file_path = os.path.join(storage_path, "music", filename)
+    if os.path.exists(file_path):
+        return {"status": "ready"}
+    return {"status": "processing"}
+
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
