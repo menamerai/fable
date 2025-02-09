@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
   Tooltip,
@@ -66,11 +66,11 @@ export default function Library(): React.ReactElement {
     console.log('File added:', file);
   };
 
-  // const onMessage = (message: string) => {
-  //   console.log('Message received:', message);
-  // };
+  const onMessage = (message: string) => {
+    console.log('Message received:', message);
+  };
 
-  // useWebSocket({ onMessage });
+  useWebSocket({ onMessage });
 
   return (
     <div className='w-screen h-screen flex flex-col justify-start items-center pt-4'>
@@ -105,17 +105,13 @@ export default function Library(): React.ReactElement {
         <label htmlFor='book'>
           <TooltipProvider>
             <Tooltip delayDuration={100}>
-              <TooltipTrigger asChild>
-                <Button
-                  size='icon'
-                  type='button'
-                  variant='ghost'
-                  onClick={() => {
-                    document.getElementById('book')?.click();
-                  }}
-                >
-                  <PlusIcon className='w-10 h-10 hover:scale-110 transition-all rounded-full cursor-pointer' />
-                </Button>
+              <TooltipTrigger
+                className={buttonVariants({ variant: 'ghost', size: 'icon' })}
+                onClick={() => {
+                  document.getElementById('book')?.click();
+                }}
+              >
+                <PlusIcon className='w-10 h-10 hover:scale-110 transition-all rounded-full cursor-pointer' />
               </TooltipTrigger>
               <TooltipContent>
                 <p>Add a book</p>

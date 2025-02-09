@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 
 import { useArticleTheme } from '@/components/article-theme-provider';
 import { useTheme } from '@/components/theme-provider';
@@ -162,10 +162,10 @@ const ThemeSettings = () => {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
-        <Button variant='outline' className='w-14 h-14'>
-          <Paintbrush className='!w-5 !h-5' />
-        </Button>
+      <DropdownMenuTrigger
+        className={cn('w-14 h-14', buttonVariants({ variant: 'outline' }))}
+      >
+        <Paintbrush className='!w-5 !h-5' />
       </DropdownMenuTrigger>
       <DropdownMenuContent className='w-64 p-4'>
         <Tabs defaultValue='content' className='w-full'>
