@@ -14,8 +14,8 @@ Fable is an **accessible, immersive, and inclusive reading experience** designed
 ## 🛠️ Tech Stack
 
 - **Frontend**: React, Vite, Motion (for animations)
-- **Backend**: FastAPI, LangChain, Gemini 2.0 Flash
-- **AI & ML**: AudioCraft (music generation), OpenCV & MediaPipe (gesture recognition)
+- **Backend**: FastAPI
+- **AI & ML**: AudioCraft (music generation), OpenCV & MediaPipe (gesture recognition), LangChain & Gemini 2.0 Flash (text processing, mood locating, rewording)
 
 ## 📸 Screenshots
 
