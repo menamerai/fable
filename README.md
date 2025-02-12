@@ -3,6 +3,7 @@
 Fable is an **accessible, immersive, and inclusive reading experience** designed to reimagine how we interact with stories. Built as a submission for **HackDuke 2025**, Fable leverages cutting-edge AI technologies to enhance the way users engage with books on the web.
 
 [Link to Devpost](https://devpost.com/software/fable-m1d4bq)
+[Link to Pitch Deck](https://www.canva.com/design/DAGent-uH5U/Qw5VIM-_St7u_5lbuUcXag/edit?utm_content=DAGent-uH5U&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
 
 ## 🚀 Features
 
